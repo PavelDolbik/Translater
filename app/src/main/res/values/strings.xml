@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Translater</string>
+
+
+    <!-- BottomNavigationView -->
+    <string name="bnv_translate">Translate</string>
+    <string name="bnv_favorite">Favorite</string>
+
+
 </resources>

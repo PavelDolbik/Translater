@@ -49,8 +49,9 @@ dependencies {
     })
 
     // Android supported libraries
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:support-vector-drawable:$supportLibraryVersion"
 
     //MVP
     compile "com.arello-mobile:moxy:$moxyLibraryVersion"

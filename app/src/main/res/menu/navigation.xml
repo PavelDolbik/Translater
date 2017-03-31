@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_translate"
+        android:icon="@drawable/ic_translate"
+        android:title="@string/bnv_translate"
+        />
+
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/ic_bookmark"
+        android:title="@string/bnv_favorite"
+        />
+
+</menu>
