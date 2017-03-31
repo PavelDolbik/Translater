@@ -10,12 +10,13 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.dolbik.pavel.translater"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.splash.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -24,10 +25,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
 }
 
 ext {
-    supportLibraryVersion  = '25.2.0'
+    supportLibraryVersion  = '25.3.1'
     moxyLibraryVersion     = '1.4.6'
     rxJavaLibraryVersion   = '2.0.1'
     retrofitLibraryVersion = '2.2.0'
