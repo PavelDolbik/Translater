@@ -4,7 +4,19 @@
 
     <!-- BottomNavigationView -->
     <string name="bnv_translate">Translate</string>
-    <string name="bnv_favorite">Favorite</string>
+    <string name="bnv_note">Note</string>
+
+
+    <!-- TranslateFragment -->
+    <string name="tf_title">Translate</string>
+
+
+    <!-- HistoryFragment -->
+    <string name="hf_title">History</string>
+
+
+    <!-- FavoriteFragment -->
+    <string name="ff_title">Favorite</string>
 
 
 </resources>
