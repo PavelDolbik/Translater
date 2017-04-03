@@ -2,10 +2,12 @@ package com.dolbik.pavel.translater.fragments.note;
 
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +43,9 @@ public class NoteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note, container, false);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs);
+        int blackColor = ContextCompat.getColor(getContext(), R.color.black);
+        int greyColor  = ContextCompat.getColor(getContext(), R.color.gray);
+        tabs.setTabTextColors(greyColor, blackColor);
         tabs.setupWithViewPager(viewPager);
         setupViewPager();
         return view;

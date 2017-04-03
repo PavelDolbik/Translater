@@ -9,12 +9,14 @@
     android:orientation="vertical"
     >
 
+
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         />
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -25,5 +27,6 @@
         app:itemIconTint="@drawable/bnv_selector"
         app:itemTextColor="@drawable/bnv_selector"
         />
+
 
 </LinearLayout>

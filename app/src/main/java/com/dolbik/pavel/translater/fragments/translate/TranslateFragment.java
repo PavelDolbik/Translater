@@ -21,6 +21,7 @@ public class TranslateFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setShowHideAnimationEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(false);
             actionBar.show();
         }
     }
