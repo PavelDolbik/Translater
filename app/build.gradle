@@ -57,6 +57,8 @@ dependencies {
     compile "com.arello-mobile:moxy:$moxyLibraryVersion"
     compile "com.arello-mobile:moxy-android:$moxyLibraryVersion"
     compile "com.arello-mobile:moxy-app-compat:$moxyLibraryVersion"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    annotationProcessor "com.arello-mobile:moxy-compiler:$moxyLibraryVersion"
 
     //RxJava
     compile "io.reactivex.rxjava2:rxandroid:$rxJavaLibraryVersion"

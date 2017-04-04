@@ -1,20 +1,25 @@
-package com.dolbik.pavel.translater;
+package com.dolbik.pavel.translater.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.dolbik.pavel.translater.BuildConfig;
+import com.dolbik.pavel.translater.R;
+import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.fragments.note.NoteFragment;
 import com.dolbik.pavel.translater.fragments.translate.TranslateFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity
+        extends MvpAppCompatActivity
+        implements MainActivityView {
+
 
     static {
         // Для использования vector на pre lollipop. (To use a vector to pre lollipop.)
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @InjectPresenter MainActivityPresenter presenter;
     private BottomNavigationView navigation;
 
 
@@ -35,17 +41,18 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectFragment(item);
+                selectFragment(item.getItemId());
                 return true;
             }
         });
     }
 
 
-    private void selectFragment(MenuItem item) {
+    @Override
+    public void selectFragment(int menuItemId) {
         Fragment fragment = null;
 
-        switch (item.getItemId()) {
+        switch (menuItemId) {
             case R.id.navigation_translate:
                 fragment = new TranslateFragment();
                 break;
