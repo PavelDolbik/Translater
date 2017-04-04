@@ -12,6 +12,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.dolbik.pavel.translater"
+        resValue "string", "tray__authority", "${applicationId}.tray"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
@@ -73,6 +74,9 @@ dependencies {
     //Okhttp
     compile "com.squareup.okhttp3:okhttp:$okhttpLibraryVersion"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttpLibraryVersion"
+
+    //SharedPreferences
+    compile 'net.grandcentrix.tray:tray:0.11.1'
 
     //Memory leak
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakLibraryVersion"
