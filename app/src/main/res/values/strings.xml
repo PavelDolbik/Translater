@@ -9,6 +9,7 @@
 
     <!-- TranslateFragment -->
     <string name="tf_title">Translate</string>
+    <string name="tf_hint">Enter text</string>
 
 
     <!-- HistoryFragment -->
