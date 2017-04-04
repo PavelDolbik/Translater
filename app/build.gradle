@@ -64,6 +64,8 @@ dependencies {
     //RxJava
     compile "io.reactivex.rxjava2:rxandroid:$rxJavaLibraryVersion"
     compile "io.reactivex.rxjava2:rxjava:$rxJavaLibraryVersion"
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.0'
+
 
     //Retrofit
     compile "com.squareup.retrofit2:retrofit:$retrofitLibraryVersion"
