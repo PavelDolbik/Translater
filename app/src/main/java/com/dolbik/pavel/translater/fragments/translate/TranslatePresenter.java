@@ -1,46 +1,64 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
 import android.util.Log;
+import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.dolbik.pavel.translater.TApplication;
-import com.dolbik.pavel.translater.model.Langs;
-import com.dolbik.pavel.translater.utils.DataRepository;
-import com.google.gson.JsonObject;
+import com.dolbik.pavel.translater.db.DataRepository;
+import com.dolbik.pavel.translater.db.Repository;
+import com.dolbik.pavel.translater.model.Language;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Locale;
-
-import rx.SingleSubscriber;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
-    private TApplication application;
+
+    private Repository            repository;
+    private CompositeSubscription compositeSbs;
 
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        Log.d("Pasha", "onFirstViewAttach "+ Locale.getDefault().getLanguage());
-        Log.d("Pasha", "Is connected "+getApplication().isConnected());
+        repository   = new DataRepository();
+        compositeSbs = new CompositeSubscription();
 
-        loadInitLangsJson();
+        prepareInstallLangsFromJson();
+    }
 
-        /*new DataRepository().getAllLangs(Locale.getDefault().getLanguage())
-                .subscribe(new SingleSubscriber<Langs>() {
+
+    private void prepareInstallLangsFromJson() {
+        Subscription sbs = repository.preInstallLangs()
+                .subscribe(new Subscriber<Pair<Language, Language>>() {
                     @Override
-                    public void onSuccess(Langs value) {
-                        for (String s : value.getDirs()) {
-                            Log.d("Pasha", ""+s);
-                        }
+                    public void onNext(Pair<Language, Language> pair) {
+                        Log.d("Pasha", ""+pair.first.getCode()+" "+pair.first.getName()+" "+pair.second.getCode()+" "+pair.second.getName());
+                    }
+
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+        });
+        compositeSbs.add(sbs);
+    }
+
+    /*new DataRepository().getAllLangs(Locale.getDefault().getLanguage())
+                .subscribe(new SingleSubscriber<JsonElement>() {
+                    @Override
+                    public void onSuccess(JsonElement value) {
+                        Log.d("Pasha", "****************");
+                        JsonObject jsonObj = value.getAsJsonObject();
+                        String strObj = value.toString();
+                        Log.d("Pasha", "strObj -> "+strObj);
                     }
 
                     @Override
@@ -49,45 +67,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     }
                 });*/
 
-    }
-
-
-    private void loadInitLangsJson() {
-        try {
-            InputStream is = getApplication().getAssets().open("init_langs.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-
-            JSONObject obj = new JSONObject(json);
-            JSONObject langs = obj.getJSONObject("langs");
-
-            Iterator<?> keys = langs.keys();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                Log.d("Pasha", ""+key+" "+langs.get(key));
-            }
-
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    private TApplication getApplication() {
-        if (application == null) {
-            application = TApplication.getInstance();
-        }
-        return application;
-    }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("Pasha", "onDestroy");
+        compositeSbs.unsubscribe();
+        repository = null;
     }
 }
