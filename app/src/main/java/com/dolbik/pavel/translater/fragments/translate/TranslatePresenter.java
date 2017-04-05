@@ -32,12 +32,15 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
 
+    /** При первом запуске, заполняем БД и отображаем направление перевода. <br>
+     *  At the first start, fill out the database and display the direction of the translation. */
     private void prepareInstallLangsFromJson() {
         Subscription sbs = repository.preInstallLangs()
                 .subscribe(new Subscriber<Pair<Language, Language>>() {
                     @Override
                     public void onNext(Pair<Language, Language> pair) {
-                        Log.d("Pasha", ""+pair.first.getCode()+" "+pair.first.getName()+" "+pair.second.getCode()+" "+pair.second.getName());
+                        getViewState().showToolbarView();
+                        getViewState().updateTranslateDirection(pair.first.getName(), pair.second.getName());
                     }
 
                     @Override

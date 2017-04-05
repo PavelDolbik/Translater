@@ -7,7 +7,8 @@ public interface Constants {
 
     String CURRENT_LOCATION = "current_location";
     String DIRC_FROM_CODE   = "dirc_from_code";
-    String DIRC_TO_CODE     = "dirc_from_code";
-    String DIRC_FROM_NAME   = "dirc_from_NAME";
-    String DIRC_TO_NAME     = "dirc_from_NAME";
+    String DIRC_FROM_NAME   = "dirc_from_name";
+    String DIRC_TO_CODE     = "dirc_to_code";
+    String DIRC_TO_NAME     = "dirc_to_name";
+
 }
