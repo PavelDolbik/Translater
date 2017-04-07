@@ -1,10 +1,10 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.model.Language;
@@ -19,6 +19,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
 
     private Repository            repository;
+    private TApplication          application;
     private CompositeSubscription compositeSbs;
 
 
@@ -39,6 +40,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 .subscribe(new Subscriber<Pair<Language, Language>>() {
                     @Override
                     public void onNext(Pair<Language, Language> pair) {
+                        translateLangForCurrentLocale();
                         getViewState().showToolbarView();
                         getViewState().updateTranslateDirection(pair.first.getName(), pair.second.getName());
                     }
@@ -54,21 +56,37 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         compositeSbs.add(sbs);
     }
 
-    /*new DataRepository().getAllLangs(Locale.getDefault().getLanguage())
-                .subscribe(new SingleSubscriber<JsonElement>() {
-                    @Override
-                    public void onSuccess(JsonElement value) {
-                        Log.d("Pasha", "****************");
-                        JsonObject jsonObj = value.getAsJsonObject();
-                        String strObj = value.toString();
-                        Log.d("Pasha", "strObj -> "+strObj);
-                    }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        error.printStackTrace();
-                    }
-                });*/
+    /** Переводим языки в соответствии с текущей локалью. <br>
+     *  Translate languages according to the current locale. */
+    private void translateLangForCurrentLocale() {
+        if (getApplication().isConnected()) {
+            Subscription sbs = repository.getAllLangs()
+                    .subscribe(new Subscriber<Pair<Language, Language>>() {
+                        @Override
+                        public void onNext(Pair<Language, Language> pair) {
+                            getViewState().updateTranslateDirection(pair.first.getName(), pair.second.getName());
+                        }
+
+                        @Override
+                        public void onCompleted() {}
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+            compositeSbs.add(sbs);
+        }
+    }
+
+
+    private TApplication getApplication() {
+        if (application == null) {
+            application = TApplication.getInstance();
+        }
+        return application;
+    }
 
 
     @Override

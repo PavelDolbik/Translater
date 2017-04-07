@@ -16,8 +16,8 @@ public interface Repository {
     Observable<Pair<Language, Language>> preInstallLangs();
 
 
-    /** Получаем список поддерживаемых языков. <br>
-     *  Get the list of supported languages. */
-    Single<JsonElement> getAllLangs(String ui);
+    /** Получаем перевод всех доступных языков в соответствии с текущей локалью. <br>
+     *  Get the translation of all available languages according to the current locale. */
+    Observable<Pair<Language, Language>> getAllLangs();
 
 }

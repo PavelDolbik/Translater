@@ -6,15 +6,17 @@ import android.util.Pair;
 import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.model.Language;
 import com.dolbik.pavel.translater.rest.RestApi;
+import com.dolbik.pavel.translater.utils.Constants;
 import com.google.gson.JsonElement;
 
 import net.grandcentrix.tray.AppPreferences;
 
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -41,8 +43,31 @@ public class DataRepository implements Repository {
 
 
     @Override
-    public Single<JsonElement> getAllLangs(String ui) {
-        return getRestApi().getAllLangs(ui)
+    public Observable<Pair<Language, Language>> getAllLangs() {
+        return Observable
+                .fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        return getPref().getString(Constants.CURRENT_LOCATION, "");
+                    }
+                })
+                .flatMap(new Func1<String, Observable<JsonElement>>() {
+                    @Override
+                    public Observable<JsonElement> call(String s) {
+                        String currentLocale = Locale.getDefault().getLanguage();
+                        if (!currentLocale.equals(s)) {
+                            return getRestApi().getAllLangs(currentLocale).toObservable();
+                        }
+                        return null;
+                    }
+                })
+                .map(new Func1<JsonElement, Pair<Language, Language>>() {
+                    @Override
+                    public Pair<Language, Language> call(JsonElement jsonElement) {
+                        UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbOpenHelper());
+                        return updateAllLangs.update(jsonElement.toString());
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
