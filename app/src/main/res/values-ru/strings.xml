@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Translater</string>
+
+
+    <!-- BottomNavigationView -->
+    <string name="bnv_translate">Перевод</string>
+    <string name="bnv_note">Заметки</string>
+
+
+    <!-- TranslateFragment -->
+    <string name="tf_title">Перевод</string>
+    <string name="tf_hint">Введите текст</string>
+
+
+    <!-- HistoryFragment -->
+    <string name="hf_title">История</string>
+
+
+    <!-- FavoriteFragment -->
+    <string name="ff_title">Избранное</string>
+
+
+</resources>

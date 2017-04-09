@@ -2,6 +2,7 @@ package com.dolbik.pavel.translater.fragments.translate;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 public interface TranslateView extends MvpView {
@@ -17,4 +18,10 @@ public interface TranslateView extends MvpView {
      *  Update the values of the translation direction. */
     @StateStrategyType(AddToEndSingleStrategy.class)
     void updateTranslateDirection(String from, String to);
+
+
+    /** Показываем SnakeBar. <br>
+     *  Show SnakeBar.*/
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showSnakeBar(String message);
 }

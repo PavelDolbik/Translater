@@ -8,6 +8,7 @@ import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.model.Language;
+import com.dolbik.pavel.translater.rest.ErrorHandler;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -74,6 +75,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(e));
                         }
                     });
             compositeSbs.add(sbs);

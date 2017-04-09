@@ -1,155 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar_layout"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp"
+        android:layout_height="match_parent"
         >
 
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:contentInsetStart="0dp"
-            android:contentInsetLeft="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
             >
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="?android:attr/progressBarStyle"
-                />
 
-            <LinearLayout
-                android:id="@+id/toolbar_view"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:visibility="gone"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:contentInsetStart="0dp"
+                android:contentInsetLeft="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
                 >
 
-                <TextView
-                    android:id="@+id/from"
-                    android:layout_width="wrap_content"
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    style="@style/ToolbarTextViewStyle"
+                    style="?android:attr/progressBarStyle"
                     />
 
-
-                <ImageView
-                    android:id="@+id/swap"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/toolbar_view"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_swap_horizontal"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:clickable="true"
-                    android:background="?attr/selectableItemBackground"
-                    />
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    >
+
+                    <TextView
+                        android:id="@+id/from"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        style="@style/ToolbarTextViewStyle"
+                        />
 
 
-                <TextView
-                    android:id="@+id/to"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    style="@style/ToolbarTextViewStyle"
-                    />
+                    <ImageView
+                        android:id="@+id/swap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_swap_horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground"
+                        />
 
 
-            </LinearLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <!-- При старте, забирает фокус на себя. -->
-    <!-- At start, takes focus on yourself. -->
-    <View
-        android:layout_width="1px"
-        android:layout_height="1px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+                    <TextView
+                        android:id="@+id/to"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        style="@style/ToolbarTextViewStyle"
+                        />
 
 
-    <!-- Контейнер для ввода текста. -->
-    <!-- Container for text input. -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/translate_container_shape"
-        >
+                </LinearLayout>
 
-        <ImageView
-            android:id="@+id/microphone"
-            android:layout_width="wrap_content"
+            </android.support.v7.widget.Toolbar>
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <!-- При старте, забирает фокус на себя. -->
+        <!-- At start, takes focus on yourself. -->
+        <View
+            android:layout_width="1px"
+            android:layout_height="1px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+
+        <!-- Контейнер для ввода текста. -->
+        <!-- Container for text input. -->
+        <RelativeLayout
+            android:id="@+id/translate_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_microphone"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:padding="5dp"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            android:layout_margin="10dp"
+            android:background="@drawable/translate_container_shape"
+            >
 
-        <ImageView
-            android:id="@+id/volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_volume_high"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/microphone"
-            android:padding="5dp"
-            android:layout_marginTop="5dp"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            <ImageView
+                android:id="@+id/microphone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_microphone"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:padding="5dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                />
 
-        <EditText
-            android:id="@+id/plant_text"
-            style="@style/TranslateEditTextStyle"
-            android:layout_toLeftOf="@+id/microphone"
-            android:layout_toStartOf="@+id/microphone"
-            />
+            <ImageView
+                android:id="@+id/volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_volume_high"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/microphone"
+                android:padding="5dp"
+                android:layout_marginTop="5dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                />
 
-        <ImageView
-            android:id="@+id/clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_close"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/plant_text"
-            android:padding="5dp"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            <EditText
+                android:id="@+id/translate"
+                style="@style/TranslateEditTextStyle"
+                android:layout_toLeftOf="@+id/microphone"
+                android:layout_toStartOf="@+id/microphone"
+                />
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_close"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/translate"
+                android:padding="5dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
