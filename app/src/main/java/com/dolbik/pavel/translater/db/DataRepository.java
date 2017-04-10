@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.model.Language;
+import com.dolbik.pavel.translater.model.Translate;
 import com.dolbik.pavel.translater.rest.RestApi;
 import com.dolbik.pavel.translater.utils.Constants;
 import com.google.gson.JsonElement;
@@ -12,9 +13,9 @@ import com.google.gson.JsonElement;
 import net.grandcentrix.tray.AppPreferences;
 
 import java.util.Locale;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
+import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -30,13 +31,11 @@ public class DataRepository implements Repository {
 
     @Override
     public Observable<Pair<Language, Language>> preInstallLangs() {
-        return Observable.fromCallable(new Callable<Pair<Language, Language>>() {
-            @Override
-            public Pair<Language, Language> call() throws Exception {
-                PreInstallLangs preInstallLangs = new PreInstallLangs(getTApplication(), getPref(),getDbOpenHelper());
-                return preInstallLangs.checkDirectionTranslate();
-            }
-        })
+        return Observable
+                .fromCallable(() -> {
+                    PreInstallLangs preInstallLangs = new PreInstallLangs(getTApplication(), getPref(),getDbOpenHelper());
+                    return preInstallLangs.checkDirectionTranslate();
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -45,12 +44,7 @@ public class DataRepository implements Repository {
     @Override
     public Observable<Pair<Language, Language>> getAllLangs() {
         return Observable
-                .fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return getPref().getString(Constants.CURRENT_LOCATION, "");
-                    }
-                })
+                .fromCallable(() -> getPref().getString(Constants.CURRENT_LOCATION, ""))
                 .flatMap(new Func1<String, Observable<JsonElement>>() {
                     @Override
                     public Observable<JsonElement> call(String s) {
@@ -61,13 +55,18 @@ public class DataRepository implements Repository {
                         return null;
                     }
                 })
-                .map(new Func1<JsonElement, Pair<Language, Language>>() {
-                    @Override
-                    public Pair<Language, Language> call(JsonElement jsonElement) {
-                        UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbOpenHelper());
-                        return updateAllLangs.update(jsonElement.toString());
-                    }
+                .map(jsonElement -> {
+                    UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbOpenHelper());
+                    return updateAllLangs.update(jsonElement.toString());
                 })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Single<Translate> getTranslate(String text, String lang) {
+        return getRestApi().getTranslate(text, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

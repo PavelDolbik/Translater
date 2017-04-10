@@ -24,4 +24,15 @@ public interface TranslateView extends MvpView {
      *  Show SnakeBar.*/
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showSnakeBar(String message);
+
+
+    /** Показываем представление для очистки поля ввода. <br>
+     *  Show the view to clear the input field. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showCleanBtn();
+
+
+    /** Скрываем представление для очистки поля ввода. <br>
+     *  Hide the view to clear the input field. */
+    void hideCleanBtn();
 }

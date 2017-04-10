@@ -23,6 +23,12 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dolbik.pavel.translater.R;
+import com.jakewharton.rxbinding.widget.RxTextView;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class TranslateFragment
         extends MvpAppCompatFragment
@@ -39,10 +45,14 @@ public class TranslateFragment
     private CoordinatorLayout coordinatorLayout;
     private RelativeLayout    translateContainer;
     private EditText          translate;
+    private ImageView         clear;
 
-    private long lastClickFrom = 0L;
-    private long lastClickTo   = 0L;
-    private long lastClickSwap = 0L;
+    private long lastClickFrom  = 0L;
+    private long lastClickTo    = 0L;
+    private long lastClickSwap  = 0L;
+    private long lastClickClear = 0L;
+
+    private Subscription translateSbs;
 
 
     @Nullable
@@ -65,18 +75,26 @@ public class TranslateFragment
         coordinatorLayout  = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
         translateContainer = (RelativeLayout)    view.findViewById(R.id.translate_container);
         translate          = (EditText)          view.findViewById(R.id.translate);
-        translate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    translateContainer.setBackground(ContextCompat.getDrawable(
-                            getContext(), R.drawable.translate_container_focus_shape));
-                } else {
-                    translateContainer.setBackground(ContextCompat.getDrawable(
-                            getContext(), R.drawable.translate_container_shape));
-                }
+
+        translate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                translateContainer.setBackground(ContextCompat.getDrawable(
+                        getContext(), R.drawable.translate_container_focus_shape));
+            } else {
+                translateContainer.setBackground(ContextCompat.getDrawable(
+                        getContext(), R.drawable.translate_container_shape));
             }
         });
+
+        translateSbs = RxTextView.textChanges(translate)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .map(charSequence -> charSequence.toString().replaceAll("[\r\n]+", "\r").trim())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> presenter.translateText(s));
+
+
+        clear = (ImageView) view.findViewById(R.id.clear);
+        clear.setOnClickListener(this);
 
         return view;
     }
@@ -95,6 +113,28 @@ public class TranslateFragment
         TransitionManager.beginDelayedTransition(toolbarView);
         fromDirection.setText(from);
         toDirection.setText(to);
+    }
+
+    @Override
+    public void showSnakeBar(String message) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+
+    @Override
+    public void showCleanBtn() {
+        if (clear.getVisibility() != View.VISIBLE) {
+            TransitionManager.beginDelayedTransition(translateContainer);
+            clear.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    @Override
+    public void hideCleanBtn() {
+        TransitionManager.beginDelayedTransition(translateContainer);
+        clear.setVisibility(View.GONE);
     }
 
 
@@ -116,14 +156,23 @@ public class TranslateFragment
                 lastClickSwap = System.currentTimeMillis();
                 Log.d("Pasha", "swap");
                 break;
+            case R.id.clear:
+                if ((System.currentTimeMillis() - lastClickClear) < 1000) { break; }
+                lastClickClear = System.currentTimeMillis();
+                hideCleanBtn();
+                translate.getText().clear();
+                break;
         }
     }
 
 
     @Override
-    public void showSnakeBar(String message) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG);
-        snackbar.show();
+    public void onDestroy() {
+        super.onDestroy();
+        if (translateSbs != null) {
+            translateSbs.unsubscribe();
+            translateSbs = null;
+        }
     }
 
 }

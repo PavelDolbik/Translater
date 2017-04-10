@@ -32,6 +32,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">100dp</item>
         <item name="android:maxHeight">100dp</item>
+        <item name="android:maxLength">9999</item>
         <item name="android:gravity">top</item>
         <item name="android:padding">5dp</item>
         <item name="android:hint">@string/tf_hint</item>

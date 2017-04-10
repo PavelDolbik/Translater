@@ -157,7 +157,7 @@
                 android:padding="5dp"
                 android:clickable="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:visibility="invisible"
+                android:visibility="gone"
                 />
 
         </RelativeLayout>

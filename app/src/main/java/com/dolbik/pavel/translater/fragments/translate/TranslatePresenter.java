@@ -1,5 +1,7 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -8,8 +10,10 @@ import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.model.Language;
+import com.dolbik.pavel.translater.model.Translate;
 import com.dolbik.pavel.translater.rest.ErrorHandler;
 
+import rx.SingleSubscriber;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -22,6 +26,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     private Repository            repository;
     private TApplication          application;
     private CompositeSubscription compositeSbs;
+
+    /** Текущее направление перевода. <br>
+     *  Current direction of translation. */
+    private Pair<Language, Language> languagePair;
+
+    /** Направление перевода. <br>
+     *  Direction of translation. */
+    private String translateDirection;
+
+    /** Текущий текст который переводится. <br>
+     *  The current text is translated. */
+    private String translateText;
+
+    private Subscription translateSbs;
 
 
     @Override
@@ -41,9 +59,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 .subscribe(new Subscriber<Pair<Language, Language>>() {
                     @Override
                     public void onNext(Pair<Language, Language> pair) {
+                        languagePair = pair;
+                        setTranslateDirection();
                         translateLangForCurrentLocale();
                         getViewState().showToolbarView();
-                        getViewState().updateTranslateDirection(pair.first.getName(), pair.second.getName());
+                        getViewState().updateTranslateDirection(languagePair.first.getName(), languagePair.second.getName());
                     }
 
                     @Override
@@ -66,7 +86,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     .subscribe(new Subscriber<Pair<Language, Language>>() {
                         @Override
                         public void onNext(Pair<Language, Language> pair) {
-                            getViewState().updateTranslateDirection(pair.first.getName(), pair.second.getName());
+                            languagePair = pair;
+                            setTranslateDirection();
+                            getViewState().updateTranslateDirection(languagePair.first.getName(), languagePair.second.getName());
                         }
 
                         @Override
@@ -83,6 +105,53 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
 
+    void translateText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            getViewState().hideCleanBtn();
+        } else {
+            getViewState().showCleanBtn();
+            if (getApplication().isConnected()) {
+                unsubscribeTranslateSbs();
+                if (translateText == null || !translateText.equals(text)) {
+                    translateText = text;
+                    translateSbs = repository.getTranslate(text, translateDirection)
+                            .subscribe(new SingleSubscriber<Translate>() {
+                                @Override
+                                public void onSuccess(Translate value) {
+                                    Log.d("Pasha", "onSuccess "+value.getCode()+" "+value.getTest().size());
+                                }
+
+                                @Override
+                                public void onError(Throwable error) {
+                                    error.printStackTrace();
+                                    getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(error));
+                                }
+                            });
+                }
+            } else {
+                Log.d("Pasha", "No internet");
+            }
+        }
+    }
+
+
+    private void setTranslateDirection() {
+        if (languagePair != null) {
+            translateDirection = new StringBuilder()
+                    .append(languagePair.first.getCode())
+                    .append("-")
+                    .append(languagePair.second.getCode()).toString();
+        }
+    }
+
+
+    private void unsubscribeTranslateSbs() {
+        if (translateSbs != null) {
+            translateSbs.unsubscribe();
+        }
+    }
+
+
     private TApplication getApplication() {
         if (application == null) {
             application = TApplication.getInstance();
@@ -95,6 +164,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     public void onDestroy() {
         super.onDestroy();
         compositeSbs.unsubscribe();
+        unsubscribeTranslateSbs();
         repository = null;
     }
 }

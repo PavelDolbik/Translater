@@ -1,6 +1,7 @@
 package com.dolbik.pavel.translater.rest;
 
 
+import com.dolbik.pavel.translater.model.Translate;
 import com.google.gson.JsonElement;
 
 import retrofit2.http.Field;
@@ -19,4 +20,13 @@ public interface RestApi {
     @POST("api/v1.5/tr.json/getLangs")
     Single<JsonElement> getAllLangs(@Field("ui") String ui);
 
+
+    /** Получаем перевод текста. <br>
+     *  Get the translation of the text.*/
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("api/v1.5/tr.json/translate")
+    Single<Translate> getTranslate(
+            @Field("text") String text,
+            @Field("lang") String lang);
 }
