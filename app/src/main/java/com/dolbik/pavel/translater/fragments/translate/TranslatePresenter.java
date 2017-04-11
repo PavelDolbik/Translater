@@ -1,7 +1,6 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -114,22 +113,24 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 unsubscribeTranslateSbs();
                 if (translateText == null || !translateText.equals(text)) {
                     translateText = text;
+                    getViewState().showViewStub(null, true, false);
                     translateSbs = repository.getTranslate(text, translateDirection)
                             .subscribe(new SingleSubscriber<Translate>() {
                                 @Override
                                 public void onSuccess(Translate value) {
-                                    Log.d("Pasha", "onSuccess "+value.getCode()+" "+value.getTest().size());
+                                    getViewState().showViewStub(value.getTest().get(0), false, false);
                                 }
 
                                 @Override
                                 public void onError(Throwable error) {
                                     error.printStackTrace();
+                                    getViewState().showViewStub(null, false, false);
                                     getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(error));
                                 }
                             });
                 }
             } else {
-                Log.d("Pasha", "No internet");
+                getViewState().showViewStub(null, false, true);
             }
         }
     }
@@ -142,6 +143,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     .append("-")
                     .append(languagePair.second.getCode()).toString();
         }
+    }
+
+
+    void clear() {
+        getViewState().hideCleanBtn();
+        getViewState().showViewStub(null, false, false);
     }
 
 

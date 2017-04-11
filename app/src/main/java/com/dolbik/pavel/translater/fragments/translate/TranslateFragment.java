@@ -9,6 +9,7 @@ import android.support.transition.TransitionManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,12 @@ public class TranslateFragment
     private long lastClickSwap  = 0L;
     private long lastClickClear = 0L;
 
+    private ProgressBar resultPrg;
+    private TextView    resultTranslate;
+    private TextView    resultError;
+
     private Subscription translateSbs;
+
 
 
     @Nullable
@@ -96,6 +102,10 @@ public class TranslateFragment
         clear = (ImageView) view.findViewById(R.id.clear);
         clear.setOnClickListener(this);
 
+        resultPrg       = (ProgressBar) view.findViewById(R.id.resultPrg);
+        resultTranslate = (TextView)    view.findViewById(R.id.resultTranslate);
+        resultError     = (TextView) view.findViewById(R.id.resultError);
+
         return view;
     }
 
@@ -125,7 +135,7 @@ public class TranslateFragment
     @Override
     public void showCleanBtn() {
         if (clear.getVisibility() != View.VISIBLE) {
-            TransitionManager.beginDelayedTransition(translateContainer);
+            TransitionManager.beginDelayedTransition(coordinatorLayout);
             clear.setVisibility(View.VISIBLE);
         }
     }
@@ -133,8 +143,32 @@ public class TranslateFragment
 
     @Override
     public void hideCleanBtn() {
-        TransitionManager.beginDelayedTransition(translateContainer);
+        TransitionManager.beginDelayedTransition(coordinatorLayout);
         clear.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void showViewStub(String translate, boolean showProgress, boolean showError) {
+        if (TextUtils.isEmpty(translate) && !showProgress && !showError) {
+            TransitionManager.beginDelayedTransition(coordinatorLayout);
+            resultPrg.setVisibility(View.GONE);
+            resultTranslate.setVisibility(View.GONE);
+            resultError.setVisibility(View.GONE);
+        } else if (showProgress) {
+            resultPrg.setVisibility(View.VISIBLE);
+            resultTranslate.setVisibility(View.GONE);
+            resultError.setVisibility(View.GONE);
+        } else if (showError) {
+            resultError.setVisibility(View.VISIBLE);
+            resultPrg.setVisibility(View.GONE);
+            resultTranslate.setVisibility(View.GONE);
+        } else {
+            resultTranslate.setText(translate);
+            resultTranslate.setVisibility(View.VISIBLE);
+            resultPrg.setVisibility(View.GONE);
+            resultError.setVisibility(View.GONE);
+        }
     }
 
 
@@ -159,8 +193,8 @@ public class TranslateFragment
             case R.id.clear:
                 if ((System.currentTimeMillis() - lastClickClear) < 1000) { break; }
                 lastClickClear = System.currentTimeMillis();
-                hideCleanBtn();
                 translate.getText().clear();
+                presenter.clear();
                 break;
         }
     }

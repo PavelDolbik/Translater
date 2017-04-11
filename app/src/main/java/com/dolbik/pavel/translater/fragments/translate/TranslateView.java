@@ -34,5 +34,13 @@ public interface TranslateView extends MvpView {
 
     /** Скрываем представление для очистки поля ввода. <br>
      *  Hide the view to clear the input field. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void hideCleanBtn();
+
+
+    /** Отображаем определенную разметку. <br>
+     *  display a certain layout. */
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showViewStub(String resultTranslate, boolean showProgress, boolean showError);
+
 }

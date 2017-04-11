@@ -10,6 +10,7 @@
     <!-- TranslateFragment -->
     <string name="tf_title">Перевод</string>
     <string name="tf_hint">Введите текст</string>
+    <string name="tf_error">Нет интернет соединения.</string>
 
 
     <!-- HistoryFragment -->
