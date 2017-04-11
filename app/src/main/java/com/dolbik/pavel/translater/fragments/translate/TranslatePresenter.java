@@ -107,30 +107,35 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     void translateText(String text) {
         if (TextUtils.isEmpty(text)) {
             getViewState().hideCleanBtn();
+            getViewState().hideFavoriteBtn();
         } else {
             getViewState().showCleanBtn();
             if (getApplication().isConnected()) {
                 unsubscribeTranslateSbs();
                 if (translateText == null || !translateText.equals(text)) {
                     translateText = text;
-                    getViewState().showViewStub(null, true, false);
+                    getViewState().showViewStub(TranslateFragmentState.SHOW_PROGRESS, null);
                     translateSbs = repository.getTranslate(text, translateDirection)
                             .subscribe(new SingleSubscriber<Translate>() {
                                 @Override
                                 public void onSuccess(Translate value) {
-                                    getViewState().showViewStub(value.getTest().get(0), false, false);
+                                    getViewState().showFavoriteBtn();
+                                    getViewState().showViewStub(
+                                            TranslateFragmentState.SHOW_TRANSLATE, value.getText().get(0));
                                 }
 
                                 @Override
                                 public void onError(Throwable error) {
                                     error.printStackTrace();
-                                    getViewState().showViewStub(null, false, false);
+                                    getViewState().hideFavoriteBtn();
+                                    getViewState().showViewStub(TranslateFragmentState.IDLE, null);
                                     getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(error));
                                 }
                             });
                 }
             } else {
-                getViewState().showViewStub(null, false, true);
+                getViewState().hideFavoriteBtn();
+                getViewState().showViewStub(TranslateFragmentState.SHOW_ERROR, null);
             }
         }
     }
@@ -148,7 +153,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     void clear() {
         getViewState().hideCleanBtn();
-        getViewState().showViewStub(null, false, false);
+        getViewState().showViewStub(TranslateFragmentState.IDLE, null);
     }
 
 

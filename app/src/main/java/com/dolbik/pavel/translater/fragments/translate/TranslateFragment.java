@@ -53,6 +53,7 @@ public class TranslateFragment
     private long lastClickSwap  = 0L;
     private long lastClickClear = 0L;
 
+    private ImageView   favorite;
     private ProgressBar resultPrg;
     private TextView    resultTranslate;
     private TextView    resultError;
@@ -104,7 +105,8 @@ public class TranslateFragment
 
         resultPrg       = (ProgressBar) view.findViewById(R.id.resultPrg);
         resultTranslate = (TextView)    view.findViewById(R.id.resultTranslate);
-        resultError     = (TextView) view.findViewById(R.id.resultError);
+        resultError     = (TextView)    view.findViewById(R.id.resultError);
+        favorite        = (ImageView)   view.findViewById(R.id.favorite);
 
         return view;
     }
@@ -149,25 +151,46 @@ public class TranslateFragment
 
 
     @Override
-    public void showViewStub(String translate, boolean showProgress, boolean showError) {
-        if (TextUtils.isEmpty(translate) && !showProgress && !showError) {
+    public void showFavoriteBtn() {
+        if (favorite.getVisibility() != View.VISIBLE) {
             TransitionManager.beginDelayedTransition(coordinatorLayout);
-            resultPrg.setVisibility(View.GONE);
-            resultTranslate.setVisibility(View.GONE);
-            resultError.setVisibility(View.GONE);
-        } else if (showProgress) {
-            resultPrg.setVisibility(View.VISIBLE);
-            resultTranslate.setVisibility(View.GONE);
-            resultError.setVisibility(View.GONE);
-        } else if (showError) {
-            resultError.setVisibility(View.VISIBLE);
-            resultPrg.setVisibility(View.GONE);
-            resultTranslate.setVisibility(View.GONE);
-        } else {
-            resultTranslate.setText(translate);
-            resultTranslate.setVisibility(View.VISIBLE);
-            resultPrg.setVisibility(View.GONE);
-            resultError.setVisibility(View.GONE);
+            favorite.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    @Override
+    public void hideFavoriteBtn() {
+        TransitionManager.beginDelayedTransition(coordinatorLayout);
+        favorite.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void showViewStub(@TranslateFragmentState.State int state, String translate) {
+        switch (state) {
+            case TranslateFragmentState.IDLE:
+                TransitionManager.beginDelayedTransition(coordinatorLayout);
+                resultPrg.setVisibility(View.GONE);
+                resultTranslate.setVisibility(View.GONE);
+                resultError.setVisibility(View.GONE);
+                break;
+            case TranslateFragmentState.SHOW_PROGRESS:
+                resultPrg.setVisibility(View.VISIBLE);
+                resultTranslate.setVisibility(View.GONE);
+                resultError.setVisibility(View.GONE);
+                break;
+            case TranslateFragmentState.SHOW_TRANSLATE:
+                resultTranslate.setText(translate);
+                resultTranslate.setVisibility(View.VISIBLE);
+                resultPrg.setVisibility(View.GONE);
+                resultError.setVisibility(View.GONE);
+                break;
+            case TranslateFragmentState.SHOW_ERROR:
+                resultError.setVisibility(View.VISIBLE);
+                resultPrg.setVisibility(View.GONE);
+                resultTranslate.setVisibility(View.GONE);
+                break;
         }
     }
 

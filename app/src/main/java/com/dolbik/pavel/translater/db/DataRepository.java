@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
 public class DataRepository implements Repository {
 
     private TApplication   application;
-    private DbOpenHelper   dbOpenHelper;
+    private DatabaseHelper dbHelper;
     private AppPreferences pref;
     private RestApi        restApi;
 
@@ -33,7 +33,7 @@ public class DataRepository implements Repository {
     public Observable<Pair<Language, Language>> preInstallLangs() {
         return Observable
                 .fromCallable(() -> {
-                    PreInstallLangs preInstallLangs = new PreInstallLangs(getTApplication(), getPref(),getDbOpenHelper());
+                    PreInstallLangs preInstallLangs = new PreInstallLangs(getTApplication(), getPref(),getDbHelper());
                     return preInstallLangs.checkDirectionTranslate();
                 })
                 .subscribeOn(Schedulers.io())
@@ -56,7 +56,7 @@ public class DataRepository implements Repository {
                     }
                 })
                 .map(jsonElement -> {
-                    UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbOpenHelper());
+                    UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbHelper());
                     return updateAllLangs.update(jsonElement.toString());
                 })
                 .subscribeOn(Schedulers.io())
@@ -80,11 +80,11 @@ public class DataRepository implements Repository {
     }
 
 
-    private DbOpenHelper getDbOpenHelper() {
-        if (application == null || dbOpenHelper == null) {
-            dbOpenHelper = new DbOpenHelper(getTApplication());
+    private DatabaseHelper getDbHelper() {
+        if (application == null || dbHelper == null) {
+            dbHelper = getTApplication().getHelper();
         }
-        return dbOpenHelper;
+        return dbHelper;
     }
 
 

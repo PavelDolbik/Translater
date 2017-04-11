@@ -5,6 +5,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.dolbik.pavel.translater.db.DatabaseHelper;
+import com.dolbik.pavel.translater.db.DatabaseManager;
 import com.dolbik.pavel.translater.rest.RestApi;
 import com.dolbik.pavel.translater.rest.RestService;
 import com.squareup.leakcanary.LeakCanary;
@@ -46,6 +48,11 @@ public class TApplication extends Application {
 
     public RestApi getRestApi() {
         return RestService.getInstance().getRestApi(this);
+    }
+
+
+    public DatabaseHelper getHelper() {
+        return DatabaseManager.getInstance().getHelper(this);
     }
 
 }

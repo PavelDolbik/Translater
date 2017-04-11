@@ -14,15 +14,15 @@ public class Translate {
     private String lang;
 
     @SerializedName("text")
-    private List<String> test;
+    private List<String> text;
 
     public Translate() {}
 
     public int          getCode() { return code; }
     public String       getLang() { return lang; }
-    public List<String> getTest() { return test; }
+    public List<String> getText() { return text; }
 
     public void setCode(int code)          { this.code = code; }
     public void setLang(String lang)       { this.lang = lang; }
-    public void setTest(List<String> test) { this.test = test; }
+    public void setText(List<String> text) { this.text = text; }
 }

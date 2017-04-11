@@ -38,9 +38,21 @@ public interface TranslateView extends MvpView {
     void hideCleanBtn();
 
 
+    /** Показываем представление для добавления в Избранное. <br>
+     *  Show view to add to Favorites. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showFavoriteBtn();
+
+
+    /** Скрываем представление для добавления в Избранное. <br>
+     *  Hide view to add to Favorites. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void hideFavoriteBtn();
+
+
     /** Отображаем определенную разметку. <br>
      *  display a certain layout. */
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void showViewStub(String resultTranslate, boolean showProgress, boolean showError);
+    void showViewStub(@TranslateFragmentState.State int state, String translate);
 
 }

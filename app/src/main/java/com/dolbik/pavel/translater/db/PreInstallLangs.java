@@ -27,13 +27,13 @@ public class PreInstallLangs implements DbContract {
 
     private Context        context;
     private AppPreferences pref;
-    private DbOpenHelper   dbOpenHelper;
+    private DatabaseHelper dbHelper;
 
 
-    public PreInstallLangs(Context context, AppPreferences pref, DbOpenHelper dbOpenHelper) {
-        this.context      = context;
-        this.pref         = pref;
-        this.dbOpenHelper = dbOpenHelper;
+    public PreInstallLangs(Context context, AppPreferences pref, DatabaseHelper dbHelper) {
+        this.context  = context;
+        this.pref     = pref;
+        this.dbHelper = dbHelper;
     }
 
 
@@ -63,7 +63,7 @@ public class PreInstallLangs implements DbContract {
         if (jsonObj == null) {
             return pair;
         } else {
-            SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
             String insert = "INSERT OR REPLACE INTO " + LANGS + "( " +
                     Langs.LANGS_CODE + ", " + Langs.LANGS_NAME +
                     " ) VALUES (?, ?)";

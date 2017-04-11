@@ -22,12 +22,12 @@ import java.util.Locale;
 public class UpdateAllLangs implements DbContract {
 
     private AppPreferences pref;
-    private DbOpenHelper   dbOpenHelper;
+    private DatabaseHelper dbHelper;
 
 
-    public UpdateAllLangs(AppPreferences pref, DbOpenHelper dbOpenHelper) {
-        this.pref         = pref;
-        this.dbOpenHelper = dbOpenHelper;
+    public UpdateAllLangs(AppPreferences pref, DatabaseHelper dbHelper) {
+        this.pref     = pref;
+        this.dbHelper = dbHelper;
     }
 
 
@@ -44,7 +44,7 @@ public class UpdateAllLangs implements DbContract {
 
 
     private Pair<Language, Language> updateInDb(String json, Pair<Language, Language> pair) {
-        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         try {
             pref.put(Constants.CURRENT_LOCATION, Locale.getDefault().getLanguage());
