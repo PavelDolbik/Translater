@@ -5,7 +5,8 @@ import android.util.Pair;
 
 import com.dolbik.pavel.translater.model.Language;
 import com.dolbik.pavel.translater.model.Translate;
-import com.google.gson.JsonElement;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Single;
@@ -25,5 +26,10 @@ public interface Repository {
     /** Получаем перевод текста. <br>
      *  Get the translation of the text.*/
     Single<Translate> getTranslate(String text, String lang);
+
+
+    /** Получаем список доступных языков из БД. <br>
+     *  Get a list of available languages from the database. */
+    Single<List<Language>> getLangsFromDB();
 
 }

@@ -157,6 +157,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
 
+    public Pair<Language, Language> getLanguagePair() {
+        return languagePair;
+    }
+
+
     private void unsubscribeTranslateSbs() {
         if (translateSbs != null) {
             translateSbs.unsubscribe();

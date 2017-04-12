@@ -1,6 +1,7 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -9,7 +10,6 @@ import android.support.transition.TransitionManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +24,8 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dolbik.pavel.translater.R;
+import com.dolbik.pavel.translater.activity.changelang.ChangeLanguage;
+import com.dolbik.pavel.translater.utils.Constants;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.concurrent.TimeUnit;
@@ -201,12 +203,12 @@ public class TranslateFragment
             case R.id.from:
                 if ((System.currentTimeMillis() - lastClickFrom) < 1000) { break; }
                 lastClickFrom = System.currentTimeMillis();
-                Log.d("Pasha", "from");
+                changeFromLang();
                 break;
             case R.id.to:
                 if ((System.currentTimeMillis() - lastClickTo) < 1000) { break; }
                 lastClickTo = System.currentTimeMillis();
-                Log.d("Pasha", "to");
+                changeToLang();
                 break;
             case R.id.swap:
                 if ((System.currentTimeMillis() - lastClickSwap) < 1000) { break; }
@@ -220,6 +222,22 @@ public class TranslateFragment
                 presenter.clear();
                 break;
         }
+    }
+
+
+    private void changeFromLang() {
+        String fromCode = presenter.getLanguagePair().first.getCode();
+        Intent intent = new Intent(getActivity(), ChangeLanguage.class);
+        intent.putExtra(Constants.DIRC_FROM_CODE, fromCode);
+        getActivity().startActivity(intent);
+    }
+
+
+    private void changeToLang() {
+        String toCode = presenter.getLanguagePair().second.getCode();
+        Intent intent = new Intent(getActivity(), ChangeLanguage.class);
+        intent.putExtra(Constants.DIRC_TO_CODE, toCode);
+        getActivity().startActivity(intent);
     }
 
 

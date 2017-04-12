@@ -21,4 +21,8 @@
     <string name="ff_title">Избранное</string>
 
 
+    <!-- ChangeLanguage Activity -->
+    <string name="cla_title">Язык текста</string>
+    <string name="cla_translate_title">Язык перевода</string>
+
 </resources>

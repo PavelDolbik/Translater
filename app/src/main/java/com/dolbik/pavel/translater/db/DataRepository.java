@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 
 import net.grandcentrix.tray.AppPreferences;
 
+import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
@@ -67,6 +68,17 @@ public class DataRepository implements Repository {
     @Override
     public Single<Translate> getTranslate(String text, String lang) {
         return getRestApi().getTranslate(text, lang)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Single<List<Language>> getLangsFromDB() {
+        return Single
+                .fromCallable(() ->
+                        getDbHelper().getLanguageDao().queryBuilder()
+                        .orderBy(DbContract.Langs.LANGS_NAME, true).query())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -21,4 +21,9 @@
     <string name="ff_title">Favorite</string>
 
 
+    <!-- ChangeLanguage Activity -->
+    <string name="cla_title">Language of the text</string>
+    <string name="cla_translate_title">Language of translation</string>
+
+
 </resources>

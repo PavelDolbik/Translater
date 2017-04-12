@@ -40,12 +40,9 @@ public class MainActivity
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectFragment(item.getItemId());
-                return true;
-            }
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            selectFragment(item.getItemId());
+            return true;
         });
     }
 
