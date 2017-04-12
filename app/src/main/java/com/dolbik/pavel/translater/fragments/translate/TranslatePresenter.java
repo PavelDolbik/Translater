@@ -106,8 +106,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     void translateText(String text) {
         if (TextUtils.isEmpty(text)) {
-            getViewState().hideCleanBtn();
-            getViewState().hideFavoriteBtn();
+            clear();
         } else {
             getViewState().showCleanBtn();
             if (getApplication().isConnected()) {
@@ -119,7 +118,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                             .subscribe(new SingleSubscriber<Translate>() {
                                 @Override
                                 public void onSuccess(Translate value) {
-                                    getViewState().showFavoriteBtn();
+                                    getViewState().showHideFavoriteBtn(true);
                                     getViewState().showViewStub(
                                             TranslateFragmentState.SHOW_TRANSLATE, value.getText().get(0));
                                 }
@@ -127,14 +126,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                                 @Override
                                 public void onError(Throwable error) {
                                     error.printStackTrace();
-                                    getViewState().hideFavoriteBtn();
+                                    getViewState().showHideFavoriteBtn(false);
                                     getViewState().showViewStub(TranslateFragmentState.IDLE, null);
                                     getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(error));
                                 }
                             });
                 }
             } else {
-                getViewState().hideFavoriteBtn();
+                getViewState().showHideFavoriteBtn(false);
                 getViewState().showViewStub(TranslateFragmentState.SHOW_ERROR, null);
             }
         }
@@ -153,6 +152,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     void clear() {
         getViewState().hideCleanBtn();
+        getViewState().showHideFavoriteBtn(false);
         getViewState().showViewStub(TranslateFragmentState.IDLE, null);
     }
 

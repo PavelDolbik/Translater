@@ -116,7 +116,6 @@ public class TranslateFragment
 
     @Override
     public void showToolbarView() {
-        TransitionManager.beginDelayedTransition(toolbarView);
         progressBar.setVisibility(View.GONE);
         toolbarView.setVisibility(View.VISIBLE);
     }
@@ -128,6 +127,7 @@ public class TranslateFragment
         fromDirection.setText(from);
         toDirection.setText(to);
     }
+
 
     @Override
     public void showSnakeBar(String message) {
@@ -153,18 +153,13 @@ public class TranslateFragment
 
 
     @Override
-    public void showFavoriteBtn() {
-        if (favorite.getVisibility() != View.VISIBLE) {
-            TransitionManager.beginDelayedTransition(coordinatorLayout);
+    public void showHideFavoriteBtn(Boolean flag) {
+        if (flag) {
             favorite.setVisibility(View.VISIBLE);
+        } else {
+            favorite.setVisibility(View.GONE);
+            translate.getText().clear();
         }
-    }
-
-
-    @Override
-    public void hideFavoriteBtn() {
-        TransitionManager.beginDelayedTransition(coordinatorLayout);
-        favorite.setVisibility(View.GONE);
     }
 
 
@@ -218,7 +213,6 @@ public class TranslateFragment
             case R.id.clear:
                 if ((System.currentTimeMillis() - lastClickClear) < 1000) { break; }
                 lastClickClear = System.currentTimeMillis();
-                translate.getText().clear();
                 presenter.clear();
                 break;
         }
