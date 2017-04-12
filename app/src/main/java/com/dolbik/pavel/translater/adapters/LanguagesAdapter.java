@@ -16,6 +16,17 @@ import java.util.List;
 
 public class LanguagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+
+    public interface OnItemClickListener {
+        void itemClick(Language language);
+    }
+
+    private OnItemClickListener onItemClickListener;
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+
     /** Коллекция содержит списов объектов Language.
      *  Collections contains the list of Language objects. */
     private ArrayList<Language> items = new ArrayList<>();
@@ -40,6 +51,14 @@ public class LanguagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_language, parent, false);
         RecyclerView.ViewHolder holder =  new ViewHolder(view);
+        view.setOnClickListener(v -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.itemClick(items.get(adapterPosition));
+                }
+            }
+        });
         return holder;
     }
 

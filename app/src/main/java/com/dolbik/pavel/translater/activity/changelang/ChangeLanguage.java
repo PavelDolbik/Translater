@@ -1,7 +1,6 @@
 package com.dolbik.pavel.translater.activity.changelang;
 
 
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -26,7 +25,9 @@ import com.dolbik.pavel.translater.utils.Constants;
 import java.util.List;
 
 public class ChangeLanguage extends MvpAppCompatActivity
-        implements ChangeLanguageView {
+        implements
+        ChangeLanguageView,
+        LanguagesAdapter.OnItemClickListener {
 
 
     @InjectPresenter ChangeLanguagePresenter presenter;
@@ -71,6 +72,7 @@ public class ChangeLanguage extends MvpAppCompatActivity
         list              = (RecyclerView)      findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LanguagesAdapter();
+        adapter.setOnItemClickListener(this);
         list.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayout.VERTICAL);
         itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.divider_items));
@@ -96,6 +98,13 @@ public class ChangeLanguage extends MvpAppCompatActivity
     public void setData(List<Language> data) {
         adapter.setData(data);
         adapter.setSelectedCode(TextUtils.isEmpty(fromCode) ? toCode : fromCode);
+    }
+
+
+    @Override
+    public void itemClick(Language language) {
+        Log.d("Pasha", "itemClick - "+language.getCode()+" "+language.getName());
+        finish();
     }
 
 }
