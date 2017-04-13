@@ -4,6 +4,7 @@ package com.dolbik.pavel.translater.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.dolbik.pavel.translater.model.History;
 import com.dolbik.pavel.translater.model.Language;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -16,6 +17,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int    DATABASE_VERSION = 1;
 
     private Dao<Language, Integer> languageDao = null;
+    private Dao<History,  Integer> historyDao  = null;
 
 
     public DatabaseHelper(Context context) {
@@ -43,19 +45,28 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
+
     public Dao<Language, Integer> getLanguageDao() throws java.sql.SQLException {
         if (languageDao == null) { languageDao = getDao(Language.class); }
         return languageDao;
     }
 
 
+    public Dao<History, Integer> getHistoryDao() throws java.sql.SQLException {
+        if (historyDao == null) { historyDao = getDao(History.class); }
+        return historyDao;
+    }
+
+
     private synchronized void makeTables(ConnectionSource connectionSource) throws java.sql.SQLException {
         TableUtils.createTable(connectionSource, Language.class);
+        TableUtils.createTable(connectionSource, History.class);
     }
 
 
     private synchronized void removeTables(ConnectionSource connectionSource) throws java.sql.SQLException {
         TableUtils.dropTable(connectionSource, Language.class, true);
+        TableUtils.dropTable(connectionSource, History.class,  true);
     }
 
 }
