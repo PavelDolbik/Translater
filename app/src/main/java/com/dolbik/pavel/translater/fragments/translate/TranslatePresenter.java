@@ -10,7 +10,7 @@ import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.ChangeLangEvent;
 import com.dolbik.pavel.translater.model.Language;
-import com.dolbik.pavel.translater.model.Translate;
+import com.dolbik.pavel.translater.model.ResultTranslate;
 import com.dolbik.pavel.translater.rest.ErrorHandler;
 import com.dolbik.pavel.translater.utils.Constants;
 
@@ -21,7 +21,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import rx.Observable;
-import rx.SingleSubscriber;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -125,21 +124,26 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 if (translateText == null || !translateText.equals(text) || forceTranslate) {
                     translateText = text;
                     getViewState().showViewStub(TranslateFragmentState.SHOW_PROGRESS, null);
-                    translateSbs = repository.getTranslate(text, translateDirection)
-                            .subscribe(new SingleSubscriber<Translate>() {
+
+                    translateSbs = repository.getResultTranslate(translateText, translateDirection)
+                            .subscribe(new Subscriber<ResultTranslate>() {
                                 @Override
-                                public void onSuccess(Translate value) {
+                                public void onNext(ResultTranslate result) {
                                     getViewState().showHideFavoriteBtn(true);
                                     getViewState().showViewStub(
-                                            TranslateFragmentState.SHOW_TRANSLATE, value.getText().get(0));
+                                            TranslateFragmentState.SHOW_TRANSLATE,
+                                            result.getTranslate().getText().get(0));
                                 }
 
                                 @Override
-                                public void onError(Throwable error) {
-                                    error.printStackTrace();
+                                public void onCompleted() {}
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
                                     getViewState().showHideFavoriteBtn(false);
                                     getViewState().showViewStub(TranslateFragmentState.IDLE, null);
-                                    getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(error));
+                                    getViewState().showSnakeBar(ErrorHandler.getInstance().getErrorMessage(e));
                                 }
                             });
                 }

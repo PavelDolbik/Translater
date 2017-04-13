@@ -4,11 +4,14 @@ package com.dolbik.pavel.translater.db;
 import android.util.Pair;
 
 import com.dolbik.pavel.translater.TApplication;
+import com.dolbik.pavel.translater.model.History;
 import com.dolbik.pavel.translater.model.Language;
+import com.dolbik.pavel.translater.model.ResultTranslate;
 import com.dolbik.pavel.translater.model.Translate;
 import com.dolbik.pavel.translater.rest.RestApi;
 import com.dolbik.pavel.translater.utils.Constants;
 import com.google.gson.JsonElement;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import net.grandcentrix.tray.AppPreferences;
 
@@ -79,6 +82,54 @@ public class DataRepository implements Repository {
                 .fromCallable(() ->
                         getDbHelper().getLanguageDao().queryBuilder()
                         .orderBy(DbContract.Langs.LANGS_NAME, true).query())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Single<History> getHistoryEntity(String text, String direction) {
+        return Single.fromCallable(() -> {
+            QueryBuilder<History, Integer> qb = getDbHelper().getHistoryDao().queryBuilder();
+            qb.where().eq(DbContract.History.DIRECTION, direction)
+                    .and().like(DbContract.History.TEXT, prepareLikeQuery(text));
+            return qb.queryForFirst();
+        }).subscribeOn(Schedulers.io());
+    }
+
+
+    private String prepareLikeQuery(String query) {
+        return "%" + query
+                .replaceAll("\\\\", "\\\\\\\\")
+                .replaceAll("_", "\\\\_")
+                .replaceAll("%", "\\\\%")
+                .replaceAll("'", "''") + "%' ESCAPE '\\";
+    }
+
+
+    @Override
+    public Observable<ResultTranslate> getResultTranslate(String text, String lang) {
+        Observable<History> historyFromDB = getHistoryEntity(text, lang)
+                .toObservable().subscribeOn(Schedulers.io());
+        Observable<Translate> translateFronServer = getTranslate(text, lang)
+                .toObservable().subscribeOn(Schedulers.io());
+        return Observable
+                .zip(
+                        historyFromDB,
+                        translateFronServer,
+                        (history, translate) -> new ResultTranslate(translate, history))
+                .doOnNext(result -> {
+                    if (result.getHistory() == null) {
+                        History history = new History();
+                        history.setText(text);
+                        history.setTranslate(result.getTranslate().getText().get(0));
+                        history.setDirection(lang);
+                        history.setFavorite(false);
+
+                        HistoryDB historyDB = new HistoryDB(getDbHelper());
+                        historyDB.saveInHistory(history);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -3,6 +3,7 @@ package com.dolbik.pavel.translater.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 public class HistoryDB implements DbContract {
 
@@ -34,6 +35,8 @@ public class HistoryDB implements DbContract {
         } finally {
             db.endTransaction();
         }
+
+        Log.d("Pasha", "History entity save in DB");
     }
 
 
