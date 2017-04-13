@@ -49,6 +49,7 @@ public class TranslateFragment
     private RelativeLayout    translateContainer;
     private EditText          translate;
     private ImageView         clear;
+    private TextView          license;
 
     private long lastClickFrom  = 0L;
     private long lastClickTo    = 0L;
@@ -102,7 +103,8 @@ public class TranslateFragment
                 .subscribe(s -> presenter.translateText(s, false));
 
 
-        clear = (ImageView) view.findViewById(R.id.clear);
+        license = (TextView)  view.findViewById(R.id.license);
+        clear   = (ImageView) view.findViewById(R.id.clear);
         clear.setOnClickListener(this);
 
         resultPrg       = (ProgressBar) view.findViewById(R.id.resultPrg);
@@ -141,6 +143,8 @@ public class TranslateFragment
         if (clear.getVisibility() != View.VISIBLE) {
             TransitionManager.beginDelayedTransition(coordinatorLayout);
             clear.setVisibility(View.VISIBLE);
+            license.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -149,6 +153,7 @@ public class TranslateFragment
     public void hideCleanBtn() {
         TransitionManager.beginDelayedTransition(coordinatorLayout);
         clear.setVisibility(View.GONE);
+        license.setVisibility(View.GONE);
     }
 
 

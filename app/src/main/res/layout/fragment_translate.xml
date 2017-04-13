@@ -9,20 +9,16 @@
     >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:orientation="vertical">
 
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
-            >
+            app:elevation="0dp">
 
 
             <android.support.v7.widget.Toolbar
@@ -30,58 +26,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:contentInsetStart="0dp"
                 android:contentInsetLeft="0dp"
+                android:contentInsetStart="0dp"
                 app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                >
+                app:contentInsetStart="0dp">
 
                 <ProgressBar
                     android:id="@+id/progressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     style="?android:attr/progressBarStyle"
-                    />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:id="@+id/toolbar_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     android:gravity="center"
-                    android:visibility="gone"
-                    >
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/from"
+                        style="@style/ToolbarTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="right"
-                        style="@style/ToolbarTextViewStyle"
-                        />
+                        android:gravity="right" />
 
 
                     <ImageView
                         android:id="@+id/swap"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ic_swap_horizontal"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:clickable="true"
-                        android:background="?attr/selectableItemBackground"
-                        />
+                        app:srcCompat="@drawable/ic_swap_horizontal" />
 
 
                     <TextView
                         android:id="@+id/to"
+                        style="@style/ToolbarTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="left"
-                        style="@style/ToolbarTextViewStyle"
-                        />
+                        android:gravity="left" />
 
 
                 </LinearLayout>
@@ -108,55 +98,67 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/translate_container_shape"
-            >
+            android:background="@drawable/translate_container_shape">
 
             <ImageView
                 android:id="@+id/microphone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_microphone"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:padding="5dp"
-                android:clickable="true"
+                android:layout_alignParentRight="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="5dp"
                 android:visibility="gone"
-                />
+                app:srcCompat="@drawable/ic_microphone" />
 
             <ImageView
                 android:id="@+id/volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_volume_high"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_below="@id/microphone"
-                android:padding="5dp"
                 android:layout_marginTop="5dp"
-                android:clickable="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="5dp"
                 android:visibility="gone"
-                />
+                app:srcCompat="@drawable/ic_volume_high" />
 
             <EditText
                 android:id="@+id/translate"
                 style="@style/TranslateEditTextStyle"
                 android:layout_toLeftOf="@+id/microphone"
-                android:layout_toStartOf="@+id/microphone"
-                />
+                android:layout_toStartOf="@+id/microphone" />
 
             <ImageView
                 android:id="@+id/clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_close"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/translate"
-                android:padding="5dp"
-                android:clickable="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_close"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/license"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end|center"
+                android:text="@string/license"
+                android:textSize="12sp"
+                android:textColor="@color/gray"
+                android:layout_marginRight="5dp"
+                android:layout_below="@+id/translate"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@id/clear"
                 android:visibility="gone"
                 />
 
@@ -165,55 +167,49 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            >
+            android:layout_margin="10dp">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:orientation="horizontal">
 
                 <ProgressBar
                     android:id="@+id/resultPrg"
+                    style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="?android:attr/progressBarStyle"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/resultTranslate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/black"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:visibility="gone"
-                    />
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/resultError"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/gray"
                     android:gravity="center"
                     android:text="@string/tf_error"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:visibility="gone"
-                    />
+                    android:textColor="@color/gray"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_bookmark_grey"
-                    android:clickable="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
                     android:visibility="gone"
-                    />
+                    app:srcCompat="@drawable/ic_bookmark_grey" />
 
             </LinearLayout>
 
