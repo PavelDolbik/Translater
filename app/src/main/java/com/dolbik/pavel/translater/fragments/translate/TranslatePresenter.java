@@ -221,10 +221,17 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
 
+    void swap() {
+        languagePair = new Pair<>(languagePair.second, languagePair.first);
+        changeLangUpdate();
+    }
+
+
     void clear() {
         getViewState().hideCleanBtn();
         getViewState().showHideFavoriteBtn(false);
         getViewState().showViewStub(TranslateFragmentState.IDLE, null);
+        translateText = "";
     }
 
 

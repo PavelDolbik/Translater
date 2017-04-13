@@ -208,7 +208,7 @@ public class TranslateFragment
             case R.id.swap:
                 if ((System.currentTimeMillis() - lastClickSwap) < 1000) { break; }
                 lastClickSwap = System.currentTimeMillis();
-                Log.d("Pasha", "swap");
+                presenter.swap();
                 break;
             case R.id.clear:
                 if ((System.currentTimeMillis() - lastClickClear) < 1000) { break; }
