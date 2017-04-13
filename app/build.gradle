@@ -89,6 +89,9 @@ dependencies {
     //OrmLite
     compile 'com.j256.ormlite:ormlite-android:5.0'
 
+    //Events
+    compile 'org.greenrobot:eventbus:3.0.0'
+
     //Memory leak
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakLibraryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakLibraryVersion"

@@ -99,7 +99,7 @@ public class TranslateFragment
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .map(charSequence -> charSequence.toString().replaceAll("[\r\n]+", "\r").trim())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> presenter.translateText(s));
+                .subscribe(s -> presenter.translateText(s, false));
 
 
         clear = (ImageView) view.findViewById(R.id.clear);

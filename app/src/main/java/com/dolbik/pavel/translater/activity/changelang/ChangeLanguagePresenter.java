@@ -2,10 +2,12 @@ package com.dolbik.pavel.translater.activity.changelang;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
+import com.dolbik.pavel.translater.events.ChangeLangEvent;
 import com.dolbik.pavel.translater.model.Language;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -17,9 +19,9 @@ import rx.subscriptions.CompositeSubscription;
 @InjectViewState
 public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
 
-    private TApplication          application;
     private Repository            repository;
     private CompositeSubscription compositeSbs;
+    private int direction = 0; // 1 - from, 2 - to.
 
 
     @Override
@@ -51,11 +53,18 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     }
 
 
-    private TApplication getApplication() {
-        if (application == null) {
-            application = TApplication.getInstance();
+    void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+
+    // Отлавливаются в TranslatePresenter.
+    // Catch in TranslatePresenter.
+    void changeLanguage(Language language) {
+        switch (direction) {
+            case 1: EventBus.getDefault().postSticky(new ChangeLangEvent.From(language)); break;
+            case 2: EventBus.getDefault().postSticky(new ChangeLangEvent.To(language));   break;
         }
-        return application;
     }
 
 

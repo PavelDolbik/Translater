@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,7 +33,6 @@ public class ChangeLanguage extends MvpAppCompatActivity
 
     private CoordinatorLayout coordinatorLayout;
     private ProgressBar       progressBar;
-    private RecyclerView      list;
     private LanguagesAdapter  adapter;
     private String            fromCode;
     private String            toCode;
@@ -55,8 +53,10 @@ public class ChangeLanguage extends MvpAppCompatActivity
 
     private void initToolbar() {
         String title = getResources().getString(R.string.cla_title);
+        presenter.setDirection(1);
         if (!TextUtils.isEmpty(toCode)) {
             title = getResources().getString(R.string.cla_translate_title);
+            presenter.setDirection(2);
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
@@ -69,7 +69,8 @@ public class ChangeLanguage extends MvpAppCompatActivity
     private void initView() {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         progressBar       = (ProgressBar)       findViewById(R.id.progressBar);
-        list              = (RecyclerView)      findViewById(R.id.list);
+
+        RecyclerView list = (RecyclerView)      findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LanguagesAdapter();
         adapter.setOnItemClickListener(this);
@@ -103,7 +104,7 @@ public class ChangeLanguage extends MvpAppCompatActivity
 
     @Override
     public void itemClick(Language language) {
-        Log.d("Pasha", "itemClick - "+language.getCode()+" "+language.getName());
+        presenter.changeLanguage(language);
         finish();
     }
 
