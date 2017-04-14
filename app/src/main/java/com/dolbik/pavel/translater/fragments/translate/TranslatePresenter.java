@@ -10,6 +10,7 @@ import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.ChangeLangEvent;
 import com.dolbik.pavel.translater.events.HistoryEvent;
+import com.dolbik.pavel.translater.model.History;
 import com.dolbik.pavel.translater.model.Language;
 import com.dolbik.pavel.translater.model.ResultTranslate;
 import com.dolbik.pavel.translater.rest.ErrorHandler;
@@ -48,6 +49,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     /** Текущий текст который переводится. <br>
      *  The current text is translated. */
     private String translateText;
+
+    /** Пользователь выбрал item на HistoryFragment. <br>
+     *  The user selected item on HistoryFragment. */
+    private History historyFromEvent;
 
     private Subscription translateSbs;
 
@@ -102,7 +107,20 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                         }
 
                         @Override
-                        public void onCompleted() {}
+                        public void onCompleted() {
+                            //Пришло событие из HistoryFragment.
+                            // An event from HistoryFragment has come.
+                            if (historyFromEvent != null) {
+                                languagePair = new Pair<>(historyFromEvent.getFromLang(), historyFromEvent.getToLang());
+                                translateText = historyFromEvent.getText();
+                                updateTranslationDirection();
+                                updateStorePair();
+                                getViewState().setTextForTranslate(translateText);
+                                getViewState().showHideFavoriteBtn(true);
+                                getViewState().showViewStub(TranslateFragmentState.SHOW_TRANSLATE, historyFromEvent.getTranslate());
+                                historyFromEvent = null;
+                            }
+                        }
 
                         @Override
                         public void onError(Throwable e) {
@@ -126,7 +144,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     translateText = text;
                     getViewState().showViewStub(TranslateFragmentState.SHOW_PROGRESS, null);
 
-                    translateSbs = repository.getResultTranslate(translateText, translateDirection)
+                    translateSbs = repository.getResultTranslate(translateText, translateDirection, languagePair)
                             .subscribe(new Subscriber<ResultTranslate>() {
                                 @Override
                                 public void onNext(ResultTranslate result) {
@@ -196,7 +214,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         bus.removeStickyEvent(event);
         Language language     = event.getLanguage();
         Language tempLanguage = languagePair.second;
-        if (language.getCode().equals(tempLanguage.getCode())) {
+        if (language.getId() == tempLanguage.getId()) {
             tempLanguage = languagePair.first;
         }
         languagePair = new Pair<>(language, tempLanguage);
@@ -211,7 +229,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         bus.removeStickyEvent(event);
         Language language     = event.getLanguage();
         Language tempLanguage = languagePair.first;
-        if (language.getCode().equals(tempLanguage.getCode())) {
+        if (language.getId() == tempLanguage.getId()) {
             tempLanguage = languagePair.second;
         }
         languagePair = new Pair<>(tempLanguage, language);
@@ -224,7 +242,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvent(HistoryEvent.Click event) {
         bus.removeStickyEvent(event);
-        //translateText(event.getHistory().getText(), true);
+        historyFromEvent = event.getHistory();
     }
 
 

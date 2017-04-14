@@ -49,4 +49,10 @@ public interface TranslateView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showViewStub(@TranslateFragmentState.State int state, String translate);
 
+
+    /** Устанавливаем текст, который будет переведен. <br>
+     *  Set the text to be translated. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void setTextForTranslate(String text);
+
 }

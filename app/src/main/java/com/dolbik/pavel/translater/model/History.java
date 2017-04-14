@@ -23,18 +23,27 @@ public class History implements DbContract {
     @DatabaseField(columnName = History.IS_FAVORITE)
     private boolean isFavorite;
 
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true, columnName = History.FROM_LANG_ID)
+    private Language fromLang;
+
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true, columnName = History.TO_LANG_ID)
+    private Language toLang;
 
     public History() {}
 
-    public int    getId()        { return id; }
-    public String getText()      { return text; }
-    public String getTranslate() { return translate; }
-    public String getDirection() { return direction; }
-    public boolean isFavorite()  { return isFavorite; }
+    public int      getId()        { return id; }
+    public String   getText()      { return text; }
+    public String   getTranslate() { return translate; }
+    public String   getDirection() { return direction; }
+    public boolean  isFavorite()   { return isFavorite; }
+    public Language getFromLang()  { return fromLang; }
+    public Language getToLang()    { return toLang; }
 
     public void setId(int id)                  { this.id = id; }
     public void setText(String text)           { this.text = text; }
     public void setTranslate(String translate) { this.translate = translate; }
     public void setDirection(String direction) { this.direction = direction; }
     public void setFavorite(boolean favorite)  { isFavorite = favorite; }
+    public void setFromLang(Language fromLang) { this.fromLang = fromLang; }
+    public void setToLang(Language toLang)     { this.toLang = toLang; }
 }

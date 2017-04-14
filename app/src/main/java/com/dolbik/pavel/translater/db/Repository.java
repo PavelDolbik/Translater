@@ -43,7 +43,7 @@ public interface Repository {
 
     /** Получаем результат перевода с сервера и БД. <br>
      *  Get the result of translation from the server and the database. */
-    Observable<ResultTranslate> getResultTranslate(String text, String lang);
+    Observable<ResultTranslate> getResultTranslate(String text, String lang, Pair<Language, Language> pair);
 
 
     /** Получаем список всех сохраненных переводов из БД. <br>

@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -46,9 +47,18 @@ public class PreInstallLangs implements DbContract {
         if (TextUtils.isEmpty(from) || TextUtils.isEmpty(to)) {
             return saveLangsInDB();
         } else {
-            String fromName = pref.getString(Constants.DIRC_FROM_NAME, "");
-            String toName   = pref.getString(Constants.DIRC_TO_NAME,   "");
-            return new Pair<>(new Language(from, fromName), new Language(to, toName));
+            try {
+                Language fromLang = dbHelper.getLanguageDao().queryBuilder().where()
+                        .eq(Langs.LANGS_CODE, from).queryForFirst();
+                Language toLang = dbHelper.getLanguageDao().queryBuilder().where()
+                        .eq(Langs.LANGS_CODE, to).queryForFirst();
+                return new Pair<>(fromLang, toLang);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                String fromName = pref.getString(Constants.DIRC_FROM_NAME, "");
+                String toName   = pref.getString(Constants.DIRC_TO_NAME,   "");
+                return new Pair<>(new Language(from, fromName), new Language(to, toName));
+            }
         }
     }
 
@@ -71,7 +81,6 @@ public class PreInstallLangs implements DbContract {
 
             db.beginTransaction();
             try {
-
                 Iterator<?> keys = jsonObj.keys();
                 while (keys.hasNext()) {
                     String key  = String.valueOf(keys.next());
@@ -95,7 +104,14 @@ public class PreInstallLangs implements DbContract {
                 }
 
                 db.setTransactionSuccessful();
-            } catch (JSONException e) {
+
+                Language from = dbHelper.getLanguageDao().queryBuilder().where()
+                        .eq(Langs.LANGS_CODE, pair.first.getCode()).queryForFirst();
+                Language to = dbHelper.getLanguageDao().queryBuilder().where()
+                        .eq(Langs.LANGS_CODE, pair.second.getCode()).queryForFirst();
+                pair = new Pair<>(from, to);
+
+            } catch (JSONException | SQLException e) {
                 e.printStackTrace();
             } finally {
                 db.endTransaction();

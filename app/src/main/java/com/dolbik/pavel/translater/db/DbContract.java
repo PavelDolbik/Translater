@@ -13,11 +13,13 @@ public interface DbContract {
 
     String HISTORY = "history";
     interface History {
-        String ID          = "id";
-        String TEXT        = "text";
-        String TRANSLATE   = "translate";
-        String DIRECTION   = "direction";
-        String IS_FAVORITE = "is_favorite";
+        String ID           = "id";
+        String TEXT         = "text";
+        String TRANSLATE    = "translate";
+        String DIRECTION    = "direction";
+        String IS_FAVORITE  = "is_favorite";
+        String FROM_LANG_ID = "from_lang_id";
+        String TO_LANG_ID   = "to_lang_id";
     }
 
 

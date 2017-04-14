@@ -152,6 +152,13 @@ public class TranslateFragment
         TransitionManager.beginDelayedTransition(coordinatorLayout);
         clear.setVisibility(View.GONE);
         license.setVisibility(View.GONE);
+        translate.getText().clear();
+    }
+
+
+    @Override
+    public void setTextForTranslate(String text) {
+        translate.setText(text);
     }
 
 
@@ -161,7 +168,6 @@ public class TranslateFragment
             favorite.setVisibility(View.VISIBLE);
         } else {
             favorite.setVisibility(View.GONE);
-            translate.getText().clear();
         }
     }
 

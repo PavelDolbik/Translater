@@ -108,7 +108,7 @@ public class DataRepository implements Repository {
 
 
     @Override
-    public Observable<ResultTranslate> getResultTranslate(String text, String lang) {
+    public Observable<ResultTranslate> getResultTranslate(String text, String lang, Pair<Language, Language> pair) {
         Observable<History> historyFromDB = getHistoryEntity(text, lang)
                 .toObservable().subscribeOn(Schedulers.io());
         Observable<Translate> translateFronServer = getTranslate(text, lang)
@@ -125,6 +125,8 @@ public class DataRepository implements Repository {
                         history.setTranslate(result.getTranslate().getText().get(0));
                         history.setDirection(lang);
                         history.setFavorite(false);
+                        history.setFromLang(pair.first);
+                        history.setToLang(pair.second);
 
                         HistoryDB historyDB = new HistoryDB(getDbHelper());
                         historyDB.saveInHistory(history);

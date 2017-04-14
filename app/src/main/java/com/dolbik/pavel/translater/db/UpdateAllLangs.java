@@ -14,6 +14,7 @@ import net.grandcentrix.tray.AppPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -88,13 +89,20 @@ public class UpdateAllLangs implements DbContract {
             }
 
             db.setTransactionSuccessful();
-            return pair;
-        } catch (JSONException e) {
+
+            Language from = dbHelper.getLanguageDao().queryBuilder().where()
+                    .eq(Langs.LANGS_CODE, pair.first.getCode()).queryForFirst();
+            Language to = dbHelper.getLanguageDao().queryBuilder().where()
+                    .eq(Langs.LANGS_CODE, pair.second.getCode()).queryForFirst();
+            return new Pair<>(from, to);
+
+        } catch (JSONException | SQLException e) {
             e.printStackTrace();
-            return pair;
         } finally {
             db.endTransaction();
         }
+
+        return pair;
     }
 
 }
