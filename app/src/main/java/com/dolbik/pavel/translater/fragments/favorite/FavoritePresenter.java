@@ -1,4 +1,4 @@
-package com.dolbik.pavel.translater.fragments.history;
+package com.dolbik.pavel.translater.fragments.favorite;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -14,7 +14,7 @@ import rx.subscriptions.CompositeSubscription;
 
 
 @InjectViewState
-public class HistoryPresenter extends MvpPresenter<HistoryView> {
+public class FavoritePresenter extends MvpPresenter<FavoriteView> {
 
     private Repository            repository;
     private CompositeSubscription compositeSbs;
@@ -34,7 +34,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
     private void getHistoryFromDB() {
         getViewState().showHideProgress(true);
         getViewState().showHideEmpty(false);
-        Subscription sbs = repository.getHistoryFromDb()
+        Subscription sbs = repository.getFavoritesFromDb()
                 .subscribe(new SingleSubscriber<List<History>>() {
                     @Override
                     public void onSuccess(List<History> data) {

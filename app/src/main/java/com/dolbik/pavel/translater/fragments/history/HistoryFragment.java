@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -38,6 +39,7 @@ public class HistoryFragment extends MvpAppCompatFragment
     private CoordinatorLayout coordinatorLayout;
     private ProgressBar       progressBar;
     private HistoryAdapter    adapter;
+    private TextView          empty;
 
 
     @Nullable
@@ -47,6 +49,7 @@ public class HistoryFragment extends MvpAppCompatFragment
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
         progressBar       = (ProgressBar)       view.findViewById(R.id.progressBar);
+        empty             = (TextView)          view.findViewById(R.id.empty);
 
         RecyclerView list = (RecyclerView) view.findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -78,6 +81,12 @@ public class HistoryFragment extends MvpAppCompatFragment
     @Override
     public void setData(List<History> data) {
         adapter.setData(data);
+    }
+
+
+    @Override
+    public void showHideEmpty(boolean flag) {
+        empty.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
 

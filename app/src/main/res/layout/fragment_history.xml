@@ -27,4 +27,14 @@
         android:fadeScrollbars="true"
         />
 
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hf_empty"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
 </android.support.design.widget.CoordinatorLayout>

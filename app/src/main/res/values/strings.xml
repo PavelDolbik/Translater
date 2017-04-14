@@ -16,10 +16,12 @@
 
     <!-- HistoryFragment -->
     <string name="hf_title">History</string>
+    <string name="hf_empty">No translations in history</string>
 
 
     <!-- FavoriteFragment -->
     <string name="ff_title">Favorite</string>
+    <string name="ff_empty">No translations in favorites</string>
 
 
     <!-- ChangeLanguage Activity -->

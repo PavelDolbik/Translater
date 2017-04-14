@@ -1,4 +1,5 @@
-package com.dolbik.pavel.translater.fragments.history;
+package com.dolbik.pavel.translater.fragments.favorite;
+
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
@@ -8,8 +9,7 @@ import com.dolbik.pavel.translater.model.History;
 
 import java.util.List;
 
-public interface HistoryView extends MvpView {
-
+public interface FavoriteView extends MvpView {
 
     /** Показываем/Скрываем прогресс бар. <br>
      *  Show/Hide the progress bar. */
@@ -33,4 +33,5 @@ public interface HistoryView extends MvpView {
      *  Show/Hide the notification about the absence of data. */
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showHideEmpty(boolean flag);
+
 }

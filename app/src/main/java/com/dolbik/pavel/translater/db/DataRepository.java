@@ -147,6 +147,18 @@ public class DataRepository implements Repository {
     }
 
 
+    @Override
+    public Single<List<History>> getFavoritesFromDb() {
+        return Single
+                .fromCallable(() -> getDbHelper().getHistoryDao().queryBuilder()
+                        .orderBy(DbContract.History.ID, false)
+                        .where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE)
+                        .query())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     private TApplication getTApplication() {
         if (application == null) {
             application = TApplication.getInstance();

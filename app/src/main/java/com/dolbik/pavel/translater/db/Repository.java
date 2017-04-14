@@ -51,4 +51,7 @@ public interface Repository {
     Single<List<History>> getHistoryFromDb();
 
 
+    /** Получаем список всех favorites из БД. <br>
+     *  Get a list of all favorites from DB.*/
+    Single<List<History>> getFavoritesFromDb();
 }
