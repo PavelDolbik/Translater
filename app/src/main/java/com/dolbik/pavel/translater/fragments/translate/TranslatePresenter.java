@@ -9,6 +9,7 @@ import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.ChangeLangEvent;
+import com.dolbik.pavel.translater.events.HistoryEvent;
 import com.dolbik.pavel.translater.model.Language;
 import com.dolbik.pavel.translater.model.ResultTranslate;
 import com.dolbik.pavel.translater.rest.ErrorHandler;
@@ -206,7 +207,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     //Посылается из ChangeLanguagePresenter.
     //It is sent from ChangeLanguagePresenter.
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEvent(ChangeLangEvent.To event) {
+        public void onEvent(ChangeLangEvent.To event) {
         bus.removeStickyEvent(event);
         Language language     = event.getLanguage();
         Language tempLanguage = languagePair.first;
@@ -215,6 +216,15 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         }
         languagePair = new Pair<>(tempLanguage, language);
         changeLangUpdate();
+    }
+
+
+    //Посылается из HistoryFragment.
+    //It is sent from HistoryFragment.
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEvent(HistoryEvent.Click event) {
+        bus.removeStickyEvent(event);
+        //translateText(event.getHistory().getText(), true);
     }
 
 

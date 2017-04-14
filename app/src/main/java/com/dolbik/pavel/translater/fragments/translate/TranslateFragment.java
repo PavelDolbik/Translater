@@ -10,7 +10,6 @@ import android.support.transition.TransitionManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +43,6 @@ public class TranslateFragment
     private LinearLayout      toolbarView;
     private TextView          fromDirection;
     private TextView          toDirection;
-    private ImageView         swap;
     private CoordinatorLayout coordinatorLayout;
     private RelativeLayout    translateContainer;
     private EditText          translate;
@@ -72,11 +70,11 @@ public class TranslateFragment
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        progressBar   = (ProgressBar)  toolbar.findViewById(R.id.progressBar);
-        toolbarView   = (LinearLayout) toolbar.findViewById(R.id.toolbar_view);
-        fromDirection = (TextView)     toolbar.findViewById(R.id.from);
-        toDirection   = (TextView)     toolbar.findViewById(R.id.to);
-        swap          = (ImageView)    toolbar.findViewById(R.id.swap);
+        progressBar    = (ProgressBar)  toolbar.findViewById(R.id.progressBar);
+        toolbarView    = (LinearLayout) toolbar.findViewById(R.id.toolbar_view);
+        fromDirection  = (TextView)     toolbar.findViewById(R.id.from);
+        toDirection    = (TextView)     toolbar.findViewById(R.id.to);
+        ImageView swap = (ImageView)    toolbar.findViewById(R.id.swap);
 
         fromDirection.setOnClickListener(this);
         toDirection.setOnClickListener(this);
@@ -97,7 +95,7 @@ public class TranslateFragment
         });
 
         translateSbs = RxTextView.textChanges(translate)
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .debounce(1000, TimeUnit.MILLISECONDS)
                 .map(charSequence -> charSequence.toString().replaceAll("[\r\n]+", "\r").trim())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> presenter.translateText(s, false));

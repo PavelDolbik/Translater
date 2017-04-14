@@ -135,6 +135,16 @@ public class DataRepository implements Repository {
     }
 
 
+    @Override
+    public Single<List<History>> getHistoryFromDb() {
+        return Single
+                .fromCallable(() -> getDbHelper().getHistoryDao().queryBuilder()
+                        .orderBy(DbContract.History.ID, false).query())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     private TApplication getTApplication() {
         if (application == null) {
             application = TApplication.getInstance();

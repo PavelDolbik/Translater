@@ -46,4 +46,9 @@ public interface Repository {
     Observable<ResultTranslate> getResultTranslate(String text, String lang);
 
 
+    /** Получаем список всех сохраненных переводов из БД. <br>
+     *  Get a list of all the saved translations from DB.*/
+    Single<List<History>> getHistoryFromDb();
+
+
 }

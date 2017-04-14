@@ -2,7 +2,6 @@ package com.dolbik.pavel.translater.fragments.note;
 
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
