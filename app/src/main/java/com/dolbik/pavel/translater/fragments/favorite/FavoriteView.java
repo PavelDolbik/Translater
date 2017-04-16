@@ -34,4 +34,10 @@ public interface FavoriteView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showHideEmpty(boolean flag);
 
+
+    /** Удаляем определенный item. <br>
+     *  Remove the specified item. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void notifyItemRemove(int position);
+
 }

@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,10 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dolbik.pavel.translater.R;
 import com.dolbik.pavel.translater.adapters.HistoryAdapter;
+import com.dolbik.pavel.translater.events.HistoryEvent;
 import com.dolbik.pavel.translater.model.History;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -89,12 +91,21 @@ public class FavoriteFragment extends MvpAppCompatFragment
 
     @Override
     public void itemClick(History history) {
-        Log.d("Pasha", "itemClick ***");
+        //Отлавливается в TranslatePresenter. (Catch in TranslatePresenter.)
+        EventBus.getDefault().postSticky(new HistoryEvent.Click(history));
+        getActivity().onBackPressed();
     }
 
+
     @Override
-    public void favoriteChange(History history) {
-        Log.d("Pasha", "favoriteChange ***");
+    public void favoriteChange(History history, int position) {
+        presenter.updateFavoriteHistoryItem(history, position);
+    }
+
+
+    @Override
+    public void notifyItemRemove(int position) {
+        adapter.removeItemByPosition(position);
     }
 
 }

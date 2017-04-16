@@ -10,4 +10,15 @@ public class HistoryEvent {
         public Click(History history) { this.history = history; }
         public History getHistory()   { return history; }
     }
+
+
+    public static class UpdateFavoriteList {
+        public UpdateFavoriteList() {}
+    }
+
+
+    public static class UpdateHistoryList {
+        public UpdateHistoryList() {}
+    }
+
 }

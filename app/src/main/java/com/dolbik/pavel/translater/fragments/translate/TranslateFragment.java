@@ -163,8 +163,13 @@ public class TranslateFragment
 
 
     @Override
-    public void showHideFavoriteBtn(Boolean flag) {
+    public void showHideFavoriteBtn(boolean flag, boolean isFavorite) {
         if (flag) {
+            if (isFavorite) {
+                favorite.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_bookmark_yellow));
+            } else {
+                favorite.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_bookmark_grey));
+            }
             favorite.setVisibility(View.VISIBLE);
         } else {
             favorite.setVisibility(View.GONE);

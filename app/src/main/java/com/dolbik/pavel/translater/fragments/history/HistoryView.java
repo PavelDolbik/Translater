@@ -33,4 +33,10 @@ public interface HistoryView extends MvpView {
      *  Show/Hide the notification about the absence of data. */
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showHideEmpty(boolean flag);
+
+
+    /** Обновляем определенный item. <br>
+     *  Update the specified item. */
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void notifyItemChange(int position);
 }

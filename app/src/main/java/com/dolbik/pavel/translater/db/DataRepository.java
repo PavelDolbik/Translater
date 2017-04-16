@@ -159,6 +159,15 @@ public class DataRepository implements Repository {
     }
 
 
+    @Override
+    public Single<History> updateFavoriteHistoryItem(History history) {
+        return Single
+                .fromCallable(() -> new HistoryDB(getDbHelper()).updateFavorite(history))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     private TApplication getTApplication() {
         if (application == null) {
             application = TApplication.getInstance();

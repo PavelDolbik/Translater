@@ -15,6 +15,7 @@ public class HistoryDB implements DbContract {
 
 
     public void saveInHistory(com.dolbik.pavel.translater.model.History history) {
+        long start = System.currentTimeMillis();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String insert = "INSERT OR REPLACE INTO " + HISTORY + "( " +
@@ -39,11 +40,12 @@ public class HistoryDB implements DbContract {
             db.endTransaction();
         }
 
-        Log.d("Pasha", "History entity save in DB");
+        Log.d("Pasha", "History entity save in DB "+(System.currentTimeMillis() - start));
     }
 
 
-    public void updateFavorite(com.dolbik.pavel.translater.model.History history) {
+    public com.dolbik.pavel.translater.model.History updateFavorite(com.dolbik.pavel.translater.model.History history) {
+        long start = System.currentTimeMillis();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String update = "UPDATE " + HISTORY + " SET " + History.IS_FAVORITE + "=? WHERE " + History.TEXT + " =? ";
@@ -60,6 +62,9 @@ public class HistoryDB implements DbContract {
         } finally {
             db.endTransaction();
         }
+
+        Log.d("Pasha", "History entity was update in DB "+(System.currentTimeMillis() - start));
+        return history;
     }
 
 }

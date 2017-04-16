@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +98,14 @@ public class HistoryFragment extends MvpAppCompatFragment
 
 
     @Override
-    public void favoriteChange(History history) {
-        Log.d("Pasha", "favoriteChange "+history.getText());
+    public void favoriteChange(History history, int position) {
+        presenter.updateFavoriteHistoryItem(history, position);
+    }
+
+
+    @Override
+    public void notifyItemChange(int position) {
+        adapter.notifyItemChanged(position);
     }
 
 }

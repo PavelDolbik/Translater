@@ -54,4 +54,10 @@ public interface Repository {
     /** Получаем список всех favorites из БД. <br>
      *  Get a list of all favorites from DB.*/
     Single<List<History>> getFavoritesFromDb();
+
+
+    /** Добавляем или удаляем item из Favorite. <br>
+     *  Add or remove item from Favorite. */
+    Single<History> updateFavoriteHistoryItem(History history);
+
 }

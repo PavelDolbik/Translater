@@ -2,7 +2,6 @@ package com.dolbik.pavel.translater.adapters;
 
 
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface OnItemClickListener {
         void itemClick(History history);
-        void favoriteChange(History history);
+        void favoriteChange(History history, int position);
     }
 
     private OnItemClickListener onItemClickListener;
@@ -69,7 +68,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             int adapterPosition = holder.getAdapterPosition();
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 if (onItemClickListener != null) {
-                    onItemClickListener.favoriteChange(items.get(adapterPosition));
+                    onItemClickListener.favoriteChange(items.get(adapterPosition), adapterPosition);
                 }
             }
         });
@@ -87,9 +86,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.direction.setText(history.getDirection());
 
         if (history.isFavorite()) {
-            DrawableCompat.setTint(holder.favorite.getDrawable(), ContextCompat.getColor(holder.favorite.getContext(), R.color.colorAccent));
+            holder.favorite.setImageDrawable(ContextCompat.getDrawable(holder.favorite.getContext(), R.drawable.ic_bookmark_yellow));
         } else {
-            DrawableCompat.setTint(holder.favorite.getDrawable(), ContextCompat.getColor(holder.favorite.getContext(), R.color.light_gray));
+            holder.favorite.setImageDrawable(ContextCompat.getDrawable(holder.favorite.getContext(), R.drawable.ic_bookmark_grey));
         }
     }
 
@@ -104,6 +103,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         items.clear();
         items.addAll(data);
         notifyDataSetChanged();
+    }
+
+
+    public void removeItemByPosition(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
     }
 
 }
