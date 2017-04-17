@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.SingleSubscriber;
@@ -24,6 +25,10 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
     private EventBus              bus;
     private Repository            repository;
     private CompositeSubscription compositeSbs;
+
+    /** Коллекция содержит все данные. <br>
+     *  The collection contains all the data.  */
+    private List<History> allData = new ArrayList<>();
 
 
     @Override
@@ -47,8 +52,9 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
                     @Override
                     public void onSuccess(List<History> data) {
                         getViewState().showHideProgress(false);
-                        if (data.isEmpty()) { getViewState().showHideEmpty(true); }
-                        getViewState().setData(data);
+                        allData = data;
+                        if (allData.isEmpty()) { getViewState().showHideEmpty(true); }
+                        getViewState().setData(allData);
                     }
 
                     @Override
@@ -72,7 +78,9 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
                 .subscribe(new SingleSubscriber<History>() {
                     @Override
                     public void onSuccess(History value) {
+                        allData.remove(position);
                         getViewState().notifyItemRemove(position);
+                        if (allData.isEmpty()) { getViewState().showHideEmpty(true); }
                         // Отлавливается в HistoryPresenter (Catch in HistoryPresenter)
                         bus.post(new HistoryEvent.UpdateHistoryList());
                     }
@@ -88,7 +96,7 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
 
     //Посылается из HistoryPresenter.
     //It is sent from HistoryPresenter.
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = false)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(HistoryEvent.UpdateFavoriteList event) {
         getHistoryFromDB();
     }
@@ -100,6 +108,7 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
         bus.unregister(this);
         compositeSbs.unsubscribe();
         repository = null;
+        allData    = null;
     }
 
 }
