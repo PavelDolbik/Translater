@@ -40,7 +40,7 @@ android {
 
 ext {
     supportLibraryVersion  = '25.3.1'
-    moxyLibraryVersion     = '1.4.6'
+    moxyLibraryVersion     = '1.5.1'
     rxJavaLibraryVersion   = '2.0.1'
     retrofitLibraryVersion = '2.2.0'
     okhttpLibraryVersion   = '3.6.0'
