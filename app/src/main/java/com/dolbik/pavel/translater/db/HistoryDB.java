@@ -14,8 +14,9 @@ public class HistoryDB implements DbContract {
     }
 
 
-    public void saveInHistory(com.dolbik.pavel.translater.model.History history) {
+    public Long saveInHistory(com.dolbik.pavel.translater.model.History history) {
         long start = System.currentTimeMillis();
+        long insertId = -1L;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String insert = "INSERT OR REPLACE INTO " + HISTORY + "( " +
@@ -33,7 +34,7 @@ public class HistoryDB implements DbContract {
             insertStatement.bindLong(  4, history.isFavorite() ? 1 : 0);
             insertStatement.bindLong(  5, history.getFromLang().getId());
             insertStatement.bindLong(  6, history.getToLang().getId());
-            insertStatement.executeInsert();
+            insertId = insertStatement.executeInsert();
 
             db.setTransactionSuccessful();
         } finally {
@@ -41,6 +42,7 @@ public class HistoryDB implements DbContract {
         }
 
         Log.d("Pasha", "History entity save in DB "+(System.currentTimeMillis() - start));
+        return insertId;
     }
 
 

@@ -1,9 +1,5 @@
 package com.dolbik.pavel.translater.model;
 
-/**
- * Created by pavel.d on 13-Apr-17.
- */
-
 public class ResultTranslate {
 
     private Translate translate;
@@ -18,4 +14,6 @@ public class ResultTranslate {
 
     public Translate getTranslate() { return translate; }
     public History getHistory()     { return history; }
+
+    public void setHistory(History history) { this.history = history; }
 }

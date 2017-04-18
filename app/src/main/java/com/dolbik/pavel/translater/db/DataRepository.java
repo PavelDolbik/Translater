@@ -129,7 +129,9 @@ public class DataRepository implements Repository {
                         history.setToLang(pair.second);
 
                         HistoryDB historyDB = new HistoryDB(getDbHelper());
-                        historyDB.saveInHistory(history);
+                        long id = historyDB.saveInHistory(history);
+                        history.setId((int) id);
+                        result.setHistory(history);
                     }
                 })
                 .subscribeOn(Schedulers.io())

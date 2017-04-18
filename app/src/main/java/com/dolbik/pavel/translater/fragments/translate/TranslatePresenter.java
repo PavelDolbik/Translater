@@ -51,9 +51,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
      *  The current text is translated. */
     private String translateText;
 
-    /** Пользователь выбрал item на HistoryFragment. <br>
-     *  The user selected item on HistoryFragment. */
-    private History historyFromEvent;
+    /** Объект, который в данный момент переводится. <br>
+     *  The object that is currently being translated. */
+    private History currentHistory;
 
     private Subscription translateSbs;
 
@@ -111,15 +111,14 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                         public void onCompleted() {
                             //Пришло событие из HistoryFragment.
                             // An event from HistoryFragment has come.
-                            if (historyFromEvent != null) {
-                                languagePair = new Pair<>(historyFromEvent.getFromLang(), historyFromEvent.getToLang());
-                                translateText = historyFromEvent.getText();
+                            if (currentHistory != null) {
+                                languagePair = new Pair<>(currentHistory.getFromLang(), currentHistory.getToLang());
+                                translateText = currentHistory.getText();
                                 updateTranslationDirection();
                                 updateStorePair();
                                 getViewState().setTextForTranslate(translateText);
-                                getViewState().showHideFavoriteBtn(true, historyFromEvent.isFavorite());
-                                getViewState().showViewStub(TranslateFragmentState.SHOW_TRANSLATE, historyFromEvent.getTranslate());
-                                historyFromEvent = null;
+                                getViewState().showHideFavoriteBtn(true, currentHistory.isFavorite());
+                                getViewState().showViewStub(TranslateFragmentState.SHOW_TRANSLATE, currentHistory.getTranslate());
                             }
                         }
 
@@ -149,7 +148,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                             .subscribe(new Subscriber<ResultTranslate>() {
                                 @Override
                                 public void onNext(ResultTranslate result) {
-                                    getViewState().showHideFavoriteBtn(true, false);
+                                    getViewState().showHideFavoriteBtn(true, result.getHistory().isFavorite());
                                     getViewState().showViewStub(
                                             TranslateFragmentState.SHOW_TRANSLATE,
                                             result.getTranslate().getText().get(0));
@@ -243,7 +242,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvent(HistoryEvent.Click event) {
         bus.removeStickyEvent(event);
-        historyFromEvent = event.getHistory();
+        currentHistory = event.getHistory();
     }
 
 
@@ -307,7 +306,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         compositeSbs.unsubscribe();
         unsubscribeTranslateSbs();
         bus.unregister(this);
-        bus        = null;
-        repository = null;
+        currentHistory = null;
+        bus            = null;
+        repository     = null;
     }
 }
