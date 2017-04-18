@@ -1,6 +1,7 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -264,6 +265,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().showHideFavoriteBtn(false, false);
         getViewState().showViewStub(TranslateFragmentState.IDLE, null);
         translateText = "";
+    }
+
+
+    void favorite() {
+        Log.d("Pasha", "Click favorite "+translateText);
     }
 
 

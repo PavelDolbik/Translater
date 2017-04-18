@@ -28,4 +28,8 @@
     <string name="cla_title">Язык текста</string>
     <string name="cla_translate_title">Язык перевода</string>
 
+
+    <!-- Menu -->
+    <string name="menu_remove">Удалить</string>
+
 </resources>

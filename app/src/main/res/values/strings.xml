@@ -29,4 +29,8 @@
     <string name="cla_translate_title">Language of translation</string>
 
 
+    <!-- Menu -->
+    <string name="menu_remove">Remove</string>
+
+
 </resources>

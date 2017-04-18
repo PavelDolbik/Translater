@@ -49,10 +49,11 @@ public class TranslateFragment
     private ImageView         clear;
     private TextView          license;
 
-    private long lastClickFrom  = 0L;
-    private long lastClickTo    = 0L;
-    private long lastClickSwap  = 0L;
-    private long lastClickClear = 0L;
+    private long lastClickFrom     = 0L;
+    private long lastClickTo       = 0L;
+    private long lastClickSwap     = 0L;
+    private long lastClickClear    = 0L;
+    private long lastClickFavorite = 0L;
 
     private ImageView   favorite;
     private ProgressBar resultPrg;
@@ -109,6 +110,7 @@ public class TranslateFragment
         resultTranslate = (TextView)    view.findViewById(R.id.resultTranslate);
         resultError     = (TextView)    view.findViewById(R.id.resultError);
         favorite        = (ImageView)   view.findViewById(R.id.favorite);
+        favorite.setOnClickListener(this);
 
         return view;
     }
@@ -220,7 +222,7 @@ public class TranslateFragment
                 changeToLang();
                 break;
             case R.id.swap:
-                if ((System.currentTimeMillis() - lastClickSwap) < 1000) { break; }
+                if ((System.currentTimeMillis() - lastClickSwap) < 500) { break; }
                 lastClickSwap = System.currentTimeMillis();
                 presenter.swap();
                 break;
@@ -228,6 +230,11 @@ public class TranslateFragment
                 if ((System.currentTimeMillis() - lastClickClear) < 1000) { break; }
                 lastClickClear = System.currentTimeMillis();
                 presenter.clear();
+                break;
+            case R.id.favorite:
+                if ((System.currentTimeMillis() - lastClickFavorite) < 500) { break; }
+                lastClickFavorite = System.currentTimeMillis();
+                presenter.favorite();
                 break;
         }
     }
