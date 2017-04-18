@@ -1,7 +1,6 @@
 package com.dolbik.pavel.translater.fragments.translate;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -24,6 +23,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import rx.Observable;
+import rx.SingleSubscriber;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -46,10 +46,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     /** Направление перевода. <br>
      *  Direction of translation. */
     private String translateDirection;
-
-    /** Текущий текст который переводится. <br>
-     *  The current text is translated. */
-    private String translateText;
 
     /** Объект, который в данный момент переводится. <br>
      *  The object that is currently being translated. */
@@ -113,10 +109,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                             // An event from HistoryFragment has come.
                             if (currentHistory != null) {
                                 languagePair = new Pair<>(currentHistory.getFromLang(), currentHistory.getToLang());
-                                translateText = currentHistory.getText();
                                 updateTranslationDirection();
                                 updateStorePair();
-                                getViewState().setTextForTranslate(translateText);
+                                getViewState().setTextForTranslate(currentHistory.getText());
                                 getViewState().showHideFavoriteBtn(true, currentHistory.isFavorite());
                                 getViewState().showViewStub(TranslateFragmentState.SHOW_TRANSLATE, currentHistory.getTranslate());
                             }
@@ -140,15 +135,15 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
             getViewState().showCleanBtn();
             if (getApplication().isConnected()) {
                 unsubscribeTranslateSbs();
-                if (translateText == null || !translateText.equals(text) || forceTranslate) {
-                    translateText = text;
+                if (currentHistory == null || !currentHistory.getText().equals(text) || forceTranslate) {
                     getViewState().showViewStub(TranslateFragmentState.SHOW_PROGRESS, null);
 
-                    translateSbs = repository.getResultTranslate(translateText, translateDirection, languagePair)
+                    translateSbs = repository.getResultTranslate(text, translateDirection, languagePair)
                             .subscribe(new Subscriber<ResultTranslate>() {
                                 @Override
                                 public void onNext(ResultTranslate result) {
-                                    getViewState().showHideFavoriteBtn(true, result.getHistory().isFavorite());
+                                    currentHistory = result.getHistory();
+                                    getViewState().showHideFavoriteBtn(true, currentHistory.isFavorite());
                                     getViewState().showViewStub(
                                             TranslateFragmentState.SHOW_TRANSLATE,
                                             result.getTranslate().getText().get(0));
@@ -249,7 +244,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     private void changeLangUpdate() {
         updateTranslationDirection();
         updateStorePair();
-        translateText(translateText, true);
+        translateText(currentHistory.getText(), true);
     }
 
 
@@ -263,12 +258,27 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().hideCleanBtn();
         getViewState().showHideFavoriteBtn(false, false);
         getViewState().showViewStub(TranslateFragmentState.IDLE, null);
-        translateText = "";
+        currentHistory = null;
     }
 
 
     void favorite() {
-        Log.d("Pasha", "Click favorite "+translateText);
+        compositeSbs.clear();
+        currentHistory.setFavorite(!currentHistory.isFavorite());
+        Subscription sbs = repository.updateFavoriteHistoryItem(currentHistory)
+                .subscribe(new SingleSubscriber<History>() {
+                    @Override
+                    public void onSuccess(History value) {
+                        currentHistory = value;
+                        getViewState().showHideFavoriteBtn(true, currentHistory.isFavorite());
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        error.printStackTrace();
+                    }
+                });
+        compositeSbs.add(sbs);
     }
 
 
