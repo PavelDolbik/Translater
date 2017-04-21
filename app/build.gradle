@@ -87,7 +87,7 @@ dependencies {
     compile 'net.grandcentrix.tray:tray:0.11.1'
 
     //OrmLite
-    compile 'com.j256.ormlite:ormlite-android:5.0'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
 
     //Events
     compile 'org.greenrobot:eventbus:3.0.0'
