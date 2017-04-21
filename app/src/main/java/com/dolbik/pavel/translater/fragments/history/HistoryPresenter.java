@@ -49,6 +49,8 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
                         getViewState().showHideProgress(false);
                         if (data.isEmpty()) { getViewState().showHideEmpty(true); }
                         getViewState().setData(data);
+                        //Отлавливается в NotePresenter. Catch in NotePresenter.
+                        bus.post(new HistoryEvent.IsHistoryListEmpty(data.isEmpty()));
                     }
 
                     @Override
@@ -86,8 +88,8 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
     }
 
 
-    //Посылается из FavoritePresenter.
-    //It is sent from FavoritePresenter.
+    //Посылается из FavoritePresenter, NotePresenter.
+    //It is sent from FavoritePresenter, NotePresenter.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(HistoryEvent.UpdateHistoryList event) {
         getHistoryFromDB();

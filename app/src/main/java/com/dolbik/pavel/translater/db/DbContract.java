@@ -17,6 +17,7 @@ public interface DbContract {
         String TEXT         = "text";
         String TRANSLATE    = "translate";
         String DIRECTION    = "direction";
+        String IS_HISTORY   = "is_history";
         String IS_FAVORITE  = "is_favorite";
         String FROM_LANG_ID = "from_lang_id";
         String TO_LANG_ID   = "to_lang_id";

@@ -8,7 +8,7 @@
         android:icon="@drawable/ic_trash"
         android:title="@string/menu_remove"
         app:showAsAction="always"
-        android:visible="true"
+        android:visible="false"
         />
 
 </menu>

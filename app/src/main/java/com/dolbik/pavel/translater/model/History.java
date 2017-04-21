@@ -20,6 +20,9 @@ public class History implements DbContract {
     @DatabaseField(columnName = History.DIRECTION)
     private String direction;
 
+    @DatabaseField(columnName = History.IS_HISTORY)
+    private boolean isHistory;
+
     @DatabaseField(columnName = History.IS_FAVORITE)
     private boolean isFavorite;
 
@@ -35,6 +38,7 @@ public class History implements DbContract {
     public String   getText()      { return text; }
     public String   getTranslate() { return translate; }
     public String   getDirection() { return direction; }
+    public boolean  isHistory()    { return isHistory; }
     public boolean  isFavorite()   { return isFavorite; }
     public Language getFromLang()  { return fromLang; }
     public Language getToLang()    { return toLang; }
@@ -43,6 +47,7 @@ public class History implements DbContract {
     public void setText(String text)           { this.text = text; }
     public void setTranslate(String translate) { this.translate = translate; }
     public void setDirection(String direction) { this.direction = direction; }
+    public void setHistory(boolean history)    { isHistory = history;}
     public void setFavorite(boolean favorite)  { isFavorite = favorite; }
     public void setFromLang(Language fromLang) { this.fromLang = fromLang; }
     public void setToLang(Language toLang)     { this.toLang = toLang; }

@@ -11,10 +11,13 @@ import com.dolbik.pavel.translater.model.Translate;
 import com.dolbik.pavel.translater.rest.RestApi;
 import com.dolbik.pavel.translater.utils.Constants;
 import com.google.gson.JsonElement;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import net.grandcentrix.tray.AppPreferences;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,7 +73,8 @@ public class DataRepository implements Repository {
 
     @Override
     public Single<Translate> getTranslate(String text, String lang) {
-        return getRestApi().getTranslate(text, lang)
+        return getRestApi()
+                .getTranslate(text, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -89,12 +93,14 @@ public class DataRepository implements Repository {
 
     @Override
     public Single<History> getHistoryEntity(String text, String direction) {
-        return Single.fromCallable(() -> {
-            QueryBuilder<History, Integer> qb = getDbHelper().getHistoryDao().queryBuilder();
-            qb.where().eq(DbContract.History.DIRECTION, direction)
-                    .and().like(DbContract.History.TEXT, prepareLikeQuery(text));
-            return qb.queryForFirst();
-        }).subscribeOn(Schedulers.io());
+        return Single
+                .fromCallable(() -> {
+                    QueryBuilder<History, Integer> qb = getDbHelper().getHistoryDao().queryBuilder();
+                    qb.where().eq(DbContract.History.DIRECTION, direction)
+                            .and().like(DbContract.History.TEXT, prepareLikeQuery(text));
+                    return qb.queryForFirst();
+                })
+                .subscribeOn(Schedulers.io());
     }
 
 
@@ -132,6 +138,15 @@ public class DataRepository implements Repository {
                         long id = historyDB.saveInHistory(history);
                         history.setId((int) id);
                         result.setHistory(history);
+                    } else {
+                        if (!result.getHistory().isHistory()) {
+                            result.getHistory().setHistory(true);
+                            try {
+                                getDbHelper().getHistoryDao().update(result.getHistory());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -143,7 +158,9 @@ public class DataRepository implements Repository {
     public Single<List<History>> getHistoryFromDb() {
         return Single
                 .fromCallable(() -> getDbHelper().getHistoryDao().queryBuilder()
-                        .orderBy(DbContract.History.ID, false).query())
+                        .orderBy(DbContract.History.ID, false)
+                        .where().eq(DbContract.History.IS_HISTORY, Boolean.TRUE)
+                        .query())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -165,6 +182,47 @@ public class DataRepository implements Repository {
     public Single<History> updateFavoriteHistoryItem(History history) {
         return Single
                 .fromCallable(() -> new HistoryDB(getDbHelper()).updateFavorite(history))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Single<Boolean> deleteAllHistory() {
+        return Single
+                .fromCallable(() -> {
+                    UpdateBuilder<History, Integer> ub = getDbHelper().getHistoryDao().updateBuilder();
+                    ub.where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE);
+                    ub.updateColumnValue(DbContract.History.IS_HISTORY, Boolean.FALSE);
+                    ub.update();
+
+                    DeleteBuilder<History, Integer> db = getDbHelper().getHistoryDao().deleteBuilder();
+                    db.where().eq(DbContract.History.IS_HISTORY, Boolean.TRUE);
+                    db.delete();
+
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Single<Boolean> deleteAllFavorite() {
+        return Single
+                .fromCallable(() -> {
+                    UpdateBuilder<History, Integer> ub = getDbHelper().getHistoryDao().updateBuilder();
+                    ub.where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE);
+                    ub.updateColumnValue(DbContract.History.IS_FAVORITE, Boolean.FALSE);
+                    ub.update();
+
+                    DeleteBuilder<History, Integer> db = getDbHelper().getHistoryDao().deleteBuilder();
+                    db.where()
+                            .eq(DbContract.History.IS_FAVORITE, Boolean.FALSE)
+                            .and().eq(DbContract.History.IS_HISTORY, Boolean.FALSE);
+                    db.delete();
+                    return true;
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

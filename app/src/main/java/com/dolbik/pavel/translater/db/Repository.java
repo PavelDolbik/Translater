@@ -60,4 +60,15 @@ public interface Repository {
      *  Add or remove item from Favorite. */
     Single<History> updateFavoriteHistoryItem(History history);
 
+
+    /** Удалить все объекты History (is history) из БД.
+     *  Delete all objects History (is history) from the database. */
+    Single<Boolean> deleteAllHistory();
+
+
+    /** Удалить все объекты Favorite из БД.
+     * Delete all objects Favorite from the database. */
+    Single<Boolean> deleteAllFavorite();
+
+
 }

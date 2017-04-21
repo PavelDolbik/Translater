@@ -54,6 +54,8 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
                         getViewState().showHideProgress(false);
                         allData = data;
                         if (allData.isEmpty()) { getViewState().showHideEmpty(true); }
+                        //Отлавливается в NotePresenter. Catch in NotePresenter.
+                        bus.post(new HistoryEvent.IsFavoriteListEmpty(data.isEmpty()));
                         getViewState().setData(allData);
                     }
 
@@ -80,7 +82,11 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
                     public void onSuccess(History value) {
                         allData.remove(position);
                         getViewState().notifyItemRemove(position);
-                        if (allData.isEmpty()) { getViewState().showHideEmpty(true); }
+                        if (allData.isEmpty()) {
+                            getViewState().showHideEmpty(true);
+                            //Отлавливается в NotePresenter. Catch in NotePresenter.
+                            bus.post(new HistoryEvent.IsFavoriteListEmpty(allData.isEmpty()));
+                        }
                         // Отлавливается в HistoryPresenter (Catch in HistoryPresenter)
                         bus.post(new HistoryEvent.UpdateHistoryList());
                     }
@@ -94,8 +100,8 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
     }
 
 
-    //Посылается из HistoryPresenter.
-    //It is sent from HistoryPresenter.
+    //Посылается из HistoryPresenter, NotePresenter.
+    //It is sent from HistoryPresenter, NotePresenter.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(HistoryEvent.UpdateFavoriteList event) {
         getHistoryFromDB();

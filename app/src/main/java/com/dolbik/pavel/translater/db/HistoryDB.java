@@ -21,8 +21,8 @@ public class HistoryDB implements DbContract {
 
         String insert = "INSERT OR REPLACE INTO " + HISTORY + "( " +
                 History.TEXT + ", " + History.TRANSLATE + ", " +
-                History.DIRECTION + ", " +  History.IS_FAVORITE + ", " +
-                History.FROM_LANG_ID + ", " + History.TO_LANG_ID + " ) VALUES (?, ?, ?, ?, ?, ?)";
+                History.DIRECTION + ", " + History.IS_HISTORY + ", " + History.IS_FAVORITE + ", " +
+                History.FROM_LANG_ID + ", " + History.TO_LANG_ID + " ) VALUES (?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement insertStatement = db.compileStatement(insert);
 
         db.beginTransaction();
@@ -31,9 +31,10 @@ public class HistoryDB implements DbContract {
             insertStatement.bindString(1, history.getText());
             insertStatement.bindString(2, history.getTranslate());
             insertStatement.bindString(3, history.getDirection());
-            insertStatement.bindLong(  4, history.isFavorite() ? 1 : 0);
-            insertStatement.bindLong(  5, history.getFromLang().getId());
-            insertStatement.bindLong(  6, history.getToLang().getId());
+            insertStatement.bindLong(  4, 1);
+            insertStatement.bindLong(  5, history.isFavorite() ? 1 : 0);
+            insertStatement.bindLong(  6, history.getFromLang().getId());
+            insertStatement.bindLong(  7, history.getToLang().getId());
             insertId = insertStatement.executeInsert();
 
             db.setTransactionSuccessful();
