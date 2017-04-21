@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dolbik.pavel.translater.R;
-import com.dolbik.pavel.translater.activity.changelang.ChangeLanguage;
+import com.dolbik.pavel.translater.activity.changelang.ChangeLanguageActivity;
 import com.dolbik.pavel.translater.utils.Constants;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -242,7 +242,7 @@ public class TranslateFragment
 
     private void changeFromLang() {
         String fromCode = presenter.getLanguagePair().first.getCode();
-        Intent intent = new Intent(getActivity(), ChangeLanguage.class);
+        Intent intent = new Intent(getActivity(), ChangeLanguageActivity.class);
         intent.putExtra(Constants.DIRC_FROM_CODE, fromCode);
         getActivity().startActivity(intent);
     }
@@ -250,7 +250,7 @@ public class TranslateFragment
 
     private void changeToLang() {
         String toCode = presenter.getLanguagePair().second.getCode();
-        Intent intent = new Intent(getActivity(), ChangeLanguage.class);
+        Intent intent = new Intent(getActivity(), ChangeLanguageActivity.class);
         intent.putExtra(Constants.DIRC_TO_CODE, toCode);
         getActivity().startActivity(intent);
     }

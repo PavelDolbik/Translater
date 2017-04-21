@@ -35,7 +35,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private  final ImageView favorite;
+        private final ImageView favorite;
         private final TextView  text;
         private final TextView  translate;
         private final TextView  direction;

@@ -43,12 +43,12 @@ public class History implements DbContract {
     public Language getFromLang()  { return fromLang; }
     public Language getToLang()    { return toLang; }
 
-    public void setId(int id)                  { this.id = id; }
-    public void setText(String text)           { this.text = text; }
+    public void setId(int id)                  { this.id        = id; }
+    public void setText(String text)           { this.text      = text; }
     public void setTranslate(String translate) { this.translate = translate; }
     public void setDirection(String direction) { this.direction = direction; }
-    public void setHistory(boolean history)    { isHistory = history;}
-    public void setFavorite(boolean favorite)  { isFavorite = favorite; }
-    public void setFromLang(Language fromLang) { this.fromLang = fromLang; }
-    public void setToLang(Language toLang)     { this.toLang = toLang; }
+    public void setHistory(boolean history)    { isHistory      = history;}
+    public void setFavorite(boolean favorite)  { isFavorite     = favorite; }
+    public void setFromLang(Language fromLang) { this.fromLang  = fromLang; }
+    public void setToLang(Language toLang)     { this.toLang    = toLang; }
 }

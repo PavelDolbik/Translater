@@ -39,7 +39,7 @@ public class RestService {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         return builder
-                .addInterceptor(logging)
+                //.addInterceptor(logging) //Для отладки запросов
                 .addInterceptor(new ApiKeyInterceptor())
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(   10, TimeUnit.SECONDS)

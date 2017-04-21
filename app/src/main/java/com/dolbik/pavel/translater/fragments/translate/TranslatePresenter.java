@@ -244,7 +244,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     private void changeLangUpdate() {
         updateTranslationDirection();
         updateStorePair();
-        translateText(currentHistory.getText(), true);
+        if (currentHistory != null) { translateText(currentHistory.getText(), true); }
     }
 
 

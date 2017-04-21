@@ -23,7 +23,7 @@ import com.dolbik.pavel.translater.utils.Constants;
 
 import java.util.List;
 
-public class ChangeLanguage extends MvpAppCompatActivity
+public class ChangeLanguageActivity extends MvpAppCompatActivity
         implements
         ChangeLanguageView,
         LanguagesAdapter.OnItemClickListener {
@@ -61,7 +61,9 @@ public class ChangeLanguage extends MvpAppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
@@ -70,7 +72,7 @@ public class ChangeLanguage extends MvpAppCompatActivity
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         progressBar       = (ProgressBar)       findViewById(R.id.progressBar);
 
-        RecyclerView list = (RecyclerView)      findViewById(R.id.list);
+        RecyclerView list = (RecyclerView) findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LanguagesAdapter();
         adapter.setOnItemClickListener(this);
