@@ -2,7 +2,7 @@ package com.dolbik.pavel.translater.activity.changelang;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.dolbik.pavel.translater.db.DataRepository;
+import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.ChangeLangEvent;
 import com.dolbik.pavel.translater.model.Language;
@@ -10,6 +10,8 @@ import com.dolbik.pavel.translater.model.Language;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -19,7 +21,7 @@ import rx.subscriptions.CompositeSubscription;
 @InjectViewState
 public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
 
-    private Repository            repository;
+    @Inject Repository repository;
     private CompositeSubscription compositeSbs;
     private int direction = 0; // 1 - from, 2 - to.
 
@@ -27,7 +29,7 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        repository   = new DataRepository();
+        TApplication.getAppComponent().inject(this);
         compositeSbs = new CompositeSubscription();
         getDataFromDb();
     }
@@ -72,6 +74,5 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     public void onDestroy() {
         super.onDestroy();
         compositeSbs.unsubscribe();
-        repository = null;
     }
 }

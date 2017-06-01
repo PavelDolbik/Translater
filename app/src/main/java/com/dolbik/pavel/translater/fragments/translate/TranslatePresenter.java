@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.dolbik.pavel.translater.TApplication;
-import com.dolbik.pavel.translater.db.DataRepository;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.ChangeLangEvent;
 import com.dolbik.pavel.translater.events.HistoryEvent;
@@ -38,8 +37,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Inject AppPreferences pref;
     @Inject EventBus       bus;
     @Inject Boolean        isOnline;
+    @Inject Repository     repository;
 
-    private Repository            repository;
     private CompositeSubscription compositeSbs;
 
     /** Текущее направление перевода. <br>
@@ -62,7 +61,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         super.onFirstViewAttach();
         TApplication.getAppComponent().inject(this);
 
-        repository   = new DataRepository();
         compositeSbs = new CompositeSubscription();
         bus.register(this);
 
@@ -305,6 +303,5 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         unsubscribeTranslateSbs();
         bus.unregister(this);
         currentHistory = null;
-        repository     = null;
     }
 }

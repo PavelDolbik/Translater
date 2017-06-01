@@ -1,9 +1,9 @@
 package com.dolbik.pavel.translater.db;
 
 
+import android.content.Context;
 import android.util.Pair;
 
-import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.model.History;
 import com.dolbik.pavel.translater.model.Language;
 import com.dolbik.pavel.translater.model.ResultTranslate;
@@ -30,17 +30,25 @@ import rx.schedulers.Schedulers;
 
 public class DataRepository implements Repository {
 
-    private TApplication   application;
+    private Context        context;
     private DatabaseHelper dbHelper;
     private AppPreferences pref;
     private RestApi        restApi;
+
+
+    public DataRepository(Context context, RestApi restApi, DatabaseHelper dbHelper, AppPreferences pref) {
+        this.context  = context;
+        this.restApi  = restApi;
+        this.dbHelper = dbHelper;
+        this.pref     = pref;
+    }
 
 
     @Override
     public Observable<Pair<Language, Language>> preInstallLangs() {
         return Observable
                 .fromCallable(() -> {
-                    PreInstallLangs preInstallLangs = new PreInstallLangs(getTApplication(), getPref(),getDbHelper());
+                    PreInstallLangs preInstallLangs = new PreInstallLangs(context, pref, dbHelper);
                     return preInstallLangs.checkDirectionTranslate();
                 })
                 .subscribeOn(Schedulers.io())
@@ -51,19 +59,19 @@ public class DataRepository implements Repository {
     @Override
     public Observable<Pair<Language, Language>> getAllLangs() {
         return Observable
-                .fromCallable(() -> getPref().getString(Constants.CURRENT_LOCATION, ""))
+                .fromCallable(() -> pref.getString(Constants.CURRENT_LOCATION, ""))
                 .flatMap(new Func1<String, Observable<JsonElement>>() {
                     @Override
                     public Observable<JsonElement> call(String s) {
                         String currentLocale = Locale.getDefault().getLanguage();
                         if (!currentLocale.equals(s)) {
-                            return getRestApi().getAllLangs(currentLocale).toObservable();
+                            return restApi.getAllLangs(currentLocale).toObservable();
                         }
                         return null;
                     }
                 })
                 .map(jsonElement -> {
-                    UpdateAllLangs updateAllLangs = new UpdateAllLangs(getPref(), getDbHelper());
+                    UpdateAllLangs updateAllLangs = new UpdateAllLangs(pref, dbHelper);
                     return updateAllLangs.update(jsonElement.toString());
                 })
                 .subscribeOn(Schedulers.io())
@@ -73,7 +81,7 @@ public class DataRepository implements Repository {
 
     @Override
     public Single<Translate> getTranslate(String text, String lang) {
-        return getRestApi()
+        return restApi
                 .getTranslate(text, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -84,7 +92,7 @@ public class DataRepository implements Repository {
     public Single<List<Language>> getLangsFromDB() {
         return Single
                 .fromCallable(() ->
-                        getDbHelper().getLanguageDao().queryBuilder()
+                        dbHelper.getLanguageDao().queryBuilder()
                         .orderBy(DbContract.Langs.LANGS_NAME, true).query())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -95,7 +103,7 @@ public class DataRepository implements Repository {
     public Single<History> getHistoryEntity(String text, String direction) {
         return Single
                 .fromCallable(() -> {
-                    QueryBuilder<History, Integer> qb = getDbHelper().getHistoryDao().queryBuilder();
+                    QueryBuilder<History, Integer> qb = dbHelper.getHistoryDao().queryBuilder();
                     qb.where().eq(DbContract.History.DIRECTION, direction)
                             .and().like(DbContract.History.TEXT, prepareLikeQuery(text));
                     return qb.queryForFirst();
@@ -134,7 +142,7 @@ public class DataRepository implements Repository {
                         history.setFromLang(pair.first);
                         history.setToLang(pair.second);
 
-                        HistoryDB historyDB = new HistoryDB(getDbHelper());
+                        HistoryDB historyDB = new HistoryDB(dbHelper);
                         long id = historyDB.saveInHistory(history);
                         history.setId((int) id);
                         result.setHistory(history);
@@ -142,7 +150,7 @@ public class DataRepository implements Repository {
                         if (!result.getHistory().isHistory()) {
                             result.getHistory().setHistory(true);
                             try {
-                                getDbHelper().getHistoryDao().update(result.getHistory());
+                                dbHelper.getHistoryDao().update(result.getHistory());
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
@@ -157,7 +165,7 @@ public class DataRepository implements Repository {
     @Override
     public Single<List<History>> getHistoryFromDb() {
         return Single
-                .fromCallable(() -> getDbHelper().getHistoryDao().queryBuilder()
+                .fromCallable(() -> dbHelper.getHistoryDao().queryBuilder()
                         .orderBy(DbContract.History.ID, false)
                         .where().eq(DbContract.History.IS_HISTORY, Boolean.TRUE)
                         .query())
@@ -169,7 +177,7 @@ public class DataRepository implements Repository {
     @Override
     public Single<List<History>> getFavoritesFromDb() {
         return Single
-                .fromCallable(() -> getDbHelper().getHistoryDao().queryBuilder()
+                .fromCallable(() -> dbHelper.getHistoryDao().queryBuilder()
                         .orderBy(DbContract.History.ID, false)
                         .where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE)
                         .query())
@@ -181,7 +189,7 @@ public class DataRepository implements Repository {
     @Override
     public Single<History> updateFavoriteHistoryItem(History history) {
         return Single
-                .fromCallable(() -> new HistoryDB(getDbHelper()).updateFavorite(history))
+                .fromCallable(() -> new HistoryDB(dbHelper).updateFavorite(history))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -191,12 +199,12 @@ public class DataRepository implements Repository {
     public Single<Boolean> deleteAllHistory() {
         return Single
                 .fromCallable(() -> {
-                    UpdateBuilder<History, Integer> ub = getDbHelper().getHistoryDao().updateBuilder();
+                    UpdateBuilder<History, Integer> ub = dbHelper.getHistoryDao().updateBuilder();
                     ub.where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE);
                     ub.updateColumnValue(DbContract.History.IS_HISTORY, Boolean.FALSE);
                     ub.update();
 
-                    DeleteBuilder<History, Integer> db = getDbHelper().getHistoryDao().deleteBuilder();
+                    DeleteBuilder<History, Integer> db = dbHelper.getHistoryDao().deleteBuilder();
                     db.where().eq(DbContract.History.IS_HISTORY, Boolean.TRUE);
                     db.delete();
 
@@ -211,12 +219,12 @@ public class DataRepository implements Repository {
     public Single<Boolean> deleteAllFavorite() {
         return Single
                 .fromCallable(() -> {
-                    UpdateBuilder<History, Integer> ub = getDbHelper().getHistoryDao().updateBuilder();
+                    UpdateBuilder<History, Integer> ub = dbHelper.getHistoryDao().updateBuilder();
                     ub.where().eq(DbContract.History.IS_FAVORITE, Boolean.TRUE);
                     ub.updateColumnValue(DbContract.History.IS_FAVORITE, Boolean.FALSE);
                     ub.update();
 
-                    DeleteBuilder<History, Integer> db = getDbHelper().getHistoryDao().deleteBuilder();
+                    DeleteBuilder<History, Integer> db = dbHelper.getHistoryDao().deleteBuilder();
                     db.where()
                             .eq(DbContract.History.IS_FAVORITE, Boolean.FALSE)
                             .and().eq(DbContract.History.IS_HISTORY, Boolean.FALSE);
@@ -225,38 +233,6 @@ public class DataRepository implements Repository {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-
-    private TApplication getTApplication() {
-        if (application == null) {
-            application = TApplication.getInstance();
-        }
-        return application;
-    }
-
-
-    private DatabaseHelper getDbHelper() {
-        if (application == null || dbHelper == null) {
-            dbHelper = getTApplication().getHelper();
-        }
-        return dbHelper;
-    }
-
-
-    private AppPreferences getPref() {
-        if (application == null || pref == null) {
-            pref = new AppPreferences(getTApplication());
-        }
-        return pref;
-    }
-
-
-    private RestApi getRestApi() {
-        if (application == null || restApi == null) {
-            restApi = getTApplication().getRestApi();
-        }
-        return restApi;
     }
 
 }

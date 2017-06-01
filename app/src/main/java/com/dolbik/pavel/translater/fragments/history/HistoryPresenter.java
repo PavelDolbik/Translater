@@ -2,7 +2,7 @@ package com.dolbik.pavel.translater.fragments.history;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.dolbik.pavel.translater.db.DataRepository;
+import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.HistoryEvent;
 import com.dolbik.pavel.translater.model.History;
@@ -13,6 +13,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -21,16 +23,17 @@ import rx.subscriptions.CompositeSubscription;
 @InjectViewState
 public class HistoryPresenter extends MvpPresenter<HistoryView> {
 
-    private EventBus              bus;
-    private Repository            repository;
+    @Inject Repository repository;
+    @Inject EventBus   bus;
+
     private CompositeSubscription compositeSbs;
 
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        bus          = EventBus.getDefault();
-        repository   = new DataRepository();
+        TApplication.getAppComponent().inject(this);
+
         compositeSbs = new CompositeSubscription();
         bus.register(this);
         getHistoryFromDB();
@@ -101,7 +104,6 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
         super.onDestroy();
         bus.unregister(this);
         compositeSbs.unsubscribe();
-        repository = null;
     }
 
 }

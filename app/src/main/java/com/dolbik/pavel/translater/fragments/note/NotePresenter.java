@@ -2,13 +2,15 @@ package com.dolbik.pavel.translater.fragments.note;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.dolbik.pavel.translater.db.DataRepository;
+import com.dolbik.pavel.translater.TApplication;
 import com.dolbik.pavel.translater.db.Repository;
 import com.dolbik.pavel.translater.events.HistoryEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import javax.inject.Inject;
 
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -18,8 +20,9 @@ import rx.subscriptions.CompositeSubscription;
 @InjectViewState
 public class NotePresenter extends MvpPresenter<NoteView> {
 
-    private EventBus              bus;
-    private Repository            repository;
+    @Inject Repository repository;
+    @Inject EventBus   bus;
+
     private CompositeSubscription compositeSbs;
 
     private boolean isHistoryEmpty  = true;
@@ -30,7 +33,7 @@ public class NotePresenter extends MvpPresenter<NoteView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        bus = EventBus.getDefault();
+        TApplication.getAppComponent().inject(this);
         bus.register(this);
     }
 
@@ -73,7 +76,7 @@ public class NotePresenter extends MvpPresenter<NoteView> {
 
 
     private void removeAllHistory() {
-        Subscription sbs = getRepository().deleteAllHistory()
+        Subscription sbs = repository.deleteAllHistory()
                 .subscribe(new SingleSubscriber<Boolean>() {
                     @Override
                     public void onSuccess(Boolean value) {
@@ -91,7 +94,7 @@ public class NotePresenter extends MvpPresenter<NoteView> {
 
 
     private void removeAllFavorite() {
-        Subscription sbs = getRepository().deleteAllFavorite()
+        Subscription sbs = repository.deleteAllFavorite()
                 .subscribe(new SingleSubscriber<Boolean>() {
                     @Override
                     public void onSuccess(Boolean value) {
@@ -110,14 +113,6 @@ public class NotePresenter extends MvpPresenter<NoteView> {
     }
 
 
-    private DataRepository getRepository() {
-        if (repository == null) {
-            repository = new DataRepository();
-        }
-        return (DataRepository) repository;
-    }
-
-
     private CompositeSubscription getCompositeSbs() {
         if (compositeSbs == null) {
             compositeSbs = new CompositeSubscription();
@@ -130,7 +125,6 @@ public class NotePresenter extends MvpPresenter<NoteView> {
     public void onDestroy() {
         super.onDestroy();
         bus.unregister(this);
-        bus = null;
         if (compositeSbs != null) { compositeSbs.unsubscribe(); }
     }
 
