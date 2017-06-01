@@ -7,6 +7,12 @@ import android.net.NetworkInfo;
 
 import com.dolbik.pavel.translater.db.DatabaseHelper;
 import com.dolbik.pavel.translater.db.DatabaseManager;
+import com.dolbik.pavel.translater.di.components.AppComponent;
+import com.dolbik.pavel.translater.di.components.DaggerAppComponent;
+import com.dolbik.pavel.translater.di.modules.BusModule;
+import com.dolbik.pavel.translater.di.modules.ContextModule;
+import com.dolbik.pavel.translater.di.modules.OnlineCheckerModule;
+import com.dolbik.pavel.translater.di.modules.PrefModule;
 import com.dolbik.pavel.translater.rest.RestApi;
 import com.dolbik.pavel.translater.rest.RestService;
 import com.squareup.leakcanary.LeakCanary;
@@ -16,6 +22,7 @@ import com.squareup.leakcanary.RefWatcher;
 public class TApplication extends Application {
 
     private static TApplication instance;
+    private static AppComponent appComponent;
     private RefWatcher refWatcher;
 
 
@@ -27,10 +34,22 @@ public class TApplication extends Application {
         super.onCreate();
         if (LeakCanary.isInAnalyzerProcess(this)) { return; }
         refWatcher = LeakCanary.install(this);
+
+        appComponent = DaggerAppComponent.builder()
+                .contextModule(new ContextModule(this))
+                .prefModule(new PrefModule())
+                .busModule(new BusModule())
+                .onlineCheckerModule(new OnlineCheckerModule())
+                .build();
     }
 
 
     public static TApplication getInstance() { return instance; }
+
+
+    public static AppComponent getAppComponent() {
+        return appComponent;
+    }
 
 
     public boolean isConnected() {

@@ -22,6 +22,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.SingleSubscriber;
 import rx.Subscriber;
@@ -33,10 +35,11 @@ import rx.subscriptions.CompositeSubscription;
 @InjectViewState
 public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
-    private EventBus              bus;
+    @Inject AppPreferences pref;
+    @Inject EventBus       bus;
+    @Inject Boolean        isOnline;
+
     private Repository            repository;
-    private TApplication          application;
-    private AppPreferences        pref;
     private CompositeSubscription compositeSbs;
 
     /** Текущее направление перевода. <br>
@@ -57,7 +60,8 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        bus          = EventBus.getDefault();
+        TApplication.getAppComponent().inject(this);
+
         repository   = new DataRepository();
         compositeSbs = new CompositeSubscription();
         bus.register(this);
@@ -94,7 +98,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     /** Переводим языки в соответствии с текущей локалью. <br>
      *  Translate languages according to the current locale. */
     private void translateLangForCurrentLocale() {
-        if (getApplication().isConnected()) {
+        if (isOnline) {
             Subscription sbs = repository.getAllLangs()
                     .subscribe(new Subscriber<Pair<Language, Language>>() {
                         @Override
@@ -133,7 +137,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
             clear();
         } else {
             getViewState().showCleanBtn();
-            if (getApplication().isConnected()) {
+            if (isOnline) {
                 unsubscribeTranslateSbs();
                 if (currentHistory == null || !currentHistory.getText().equals(text) || forceTranslate) {
                     getViewState().showViewStub(TranslateFragmentState.SHOW_PROGRESS, null);
@@ -193,10 +197,10 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
      *  Update the values stored in preferences. */
     private void updateStorePair() {
         Observable.fromCallable(() -> {
-            getPref().put(Constants.DIRC_FROM_CODE, languagePair.first.getCode());
-            getPref().put(Constants.DIRC_FROM_NAME, languagePair.first.getName());
-            getPref().put(Constants.DIRC_TO_CODE,   languagePair.second.getCode());
-            getPref().put(Constants.DIRC_TO_NAME,   languagePair.second.getName());
+            pref.put(Constants.DIRC_FROM_CODE, languagePair.first.getCode());
+            pref.put(Constants.DIRC_FROM_NAME, languagePair.first.getName());
+            pref.put(Constants.DIRC_TO_CODE,   languagePair.second.getCode());
+            pref.put(Constants.DIRC_TO_NAME,   languagePair.second.getName());
             return true;
         }).subscribeOn(Schedulers.io()).subscribe();
     }
@@ -294,22 +298,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
 
-    private TApplication getApplication() {
-        if (application == null) {
-            application = TApplication.getInstance();
-        }
-        return application;
-    }
-
-
-    private AppPreferences getPref() {
-        if (pref == null || application == null) {
-            pref = new AppPreferences(getApplication());
-        }
-        return pref;
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -317,7 +305,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         unsubscribeTranslateSbs();
         bus.unregister(this);
         currentHistory = null;
-        bus            = null;
         repository     = null;
     }
 }
