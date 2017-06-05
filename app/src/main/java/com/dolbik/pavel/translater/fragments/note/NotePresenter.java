@@ -33,7 +33,7 @@ public class NotePresenter extends MvpPresenter<NoteView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        TApplication.getAppComponent().inject(this);
+        TApplication.get().plusRepositoryComponent().inject(this);
         bus.register(this);
     }
 
@@ -126,6 +126,7 @@ public class NotePresenter extends MvpPresenter<NoteView> {
         super.onDestroy();
         bus.unregister(this);
         if (compositeSbs != null) { compositeSbs.unsubscribe(); }
+        TApplication.get().clearRepositoryComponent();
     }
 
 }

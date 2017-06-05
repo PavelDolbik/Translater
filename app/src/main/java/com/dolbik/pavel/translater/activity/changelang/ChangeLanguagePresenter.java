@@ -29,7 +29,7 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        TApplication.getAppComponent().inject(this);
+        TApplication.get().plusRepositoryComponent().inject(this);
         compositeSbs = new CompositeSubscription();
         getDataFromDb();
     }
@@ -74,5 +74,6 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     public void onDestroy() {
         super.onDestroy();
         compositeSbs.unsubscribe();
+        TApplication.get().clearRepositoryComponent();
     }
 }

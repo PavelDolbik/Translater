@@ -37,7 +37,7 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        TApplication.getAppComponent().inject(this);
+        TApplication.get().plusRepositoryComponent().inject(this);
 
         compositeSbs = new CompositeSubscription();
         bus.register(this);
@@ -116,6 +116,7 @@ public class FavoritePresenter extends MvpPresenter<FavoriteView> {
         super.onDestroy();
         bus.unregister(this);
         compositeSbs.unsubscribe();
+        TApplication.get().clearRepositoryComponent();
         allData    = null;
     }
 

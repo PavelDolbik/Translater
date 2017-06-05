@@ -32,7 +32,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        TApplication.getAppComponent().inject(this);
+        TApplication.get().plusRepositoryComponent().inject(this);
 
         compositeSbs = new CompositeSubscription();
         bus.register(this);
@@ -104,6 +104,7 @@ public class HistoryPresenter extends MvpPresenter<HistoryView> {
         super.onDestroy();
         bus.unregister(this);
         compositeSbs.unsubscribe();
+        TApplication.get().clearRepositoryComponent();
     }
 
 }

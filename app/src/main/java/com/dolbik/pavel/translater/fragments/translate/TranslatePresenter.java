@@ -59,7 +59,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        TApplication.getAppComponent().inject(this);
+        TApplication.get().plusRepositoryComponent().inject(this);
 
         compositeSbs = new CompositeSubscription();
         bus.register(this);
@@ -302,6 +302,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         compositeSbs.unsubscribe();
         unsubscribeTranslateSbs();
         bus.unregister(this);
+        TApplication.get().clearRepositoryComponent();
         currentHistory = null;
     }
 }
