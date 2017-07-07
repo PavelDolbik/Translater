@@ -50,15 +50,12 @@ ext {
     retrofitLibraryVersion = '2.2.0'
     okhttpLibraryVersion   = '3.6.0'
     leakLibraryVersion     = '1.5'
+    mockito                = '2.8.47'
 }
 
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
 
     // Android supported libraries
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
@@ -107,4 +104,12 @@ dependencies {
     //Memory leak
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakLibraryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakLibraryVersion"
+
+    // Test libs
+    testCompile "org.mockito:mockito-core:$mockito"
+    androidTestCompile "org.mockito:mockito-android:$mockito"
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }

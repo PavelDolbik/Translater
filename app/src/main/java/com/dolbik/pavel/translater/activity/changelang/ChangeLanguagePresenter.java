@@ -35,7 +35,7 @@ public class ChangeLanguagePresenter extends MvpPresenter<ChangeLanguageView> {
     }
 
 
-    private void getDataFromDb() {
+     private void getDataFromDb() {
         Subscription sbs = repository.getLangsFromDB()
                 .subscribe(new SingleSubscriber<List<Language>>() {
                     @Override
