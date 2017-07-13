@@ -75,7 +75,6 @@ public class MainActivity
         } else {
             super.onBackPressed();
         }
-        //Master
     }
 
 
