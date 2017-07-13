@@ -85,6 +85,10 @@ public class MainActivity
         if (BuildConfig.DEBUG) {
             TApplication.getRefWatcher(this).watch(this);
         }
+
+        //First change
+        //Second change
+        //Third change
     }
 
 }
