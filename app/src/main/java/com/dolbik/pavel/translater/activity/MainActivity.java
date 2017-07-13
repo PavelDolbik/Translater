@@ -75,7 +75,6 @@ public class MainActivity
         } else {
             super.onBackPressed();
         }
-        //Three
     }
 
 
@@ -85,8 +84,6 @@ public class MainActivity
         if (BuildConfig.DEBUG) {
             TApplication.getRefWatcher(this).watch(this);
         }
-        //One
-        //Two
     }
 
 }
