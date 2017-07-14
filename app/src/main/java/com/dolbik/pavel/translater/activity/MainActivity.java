@@ -84,6 +84,7 @@ public class MainActivity
         if (BuildConfig.DEBUG) {
             TApplication.getRefWatcher(this).watch(this);
         }
+        //Third commit in master
     }
 
 }
